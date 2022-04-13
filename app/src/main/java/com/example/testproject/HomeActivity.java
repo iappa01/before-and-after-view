@@ -32,11 +32,19 @@ public class HomeActivity extends AppCompatActivity {
         MultiTouchListener.setBeforeAfterView(beforeAfterView);
         beforeAfterView.setOnTouchListener(new MultiTouchListener());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int preI = seekBar.getProgress();
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                beforeAfterView.setxReal(i/100*beforeAfterView.getWidth());
-                beforeAfterView.setX(i/100*beforeAfterView.getWidth());
-
+                int deltaX = (preI - i)*beforeAfterView.getWidth()/seekBar.getMax();
+                beforeAfterView.setxReal(beforeAfterView.getxReal() - deltaX);
+                if (beforeAfterView.getX() - deltaX < 0){
+                    beforeAfterView.setX(0);
+                }else if(beforeAfterView.getX() - deltaX < beforeAfterView.getWidth()){
+                    beforeAfterView.setX(beforeAfterView.getX() - deltaX);
+                }else {
+                    beforeAfterView.setX(beforeAfterView.getWidth());
+                }
+                beforeAfterView.invalidate();
             }
 
             @Override
