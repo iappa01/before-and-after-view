@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
 public class BeforeAfterView extends View{
@@ -16,8 +17,12 @@ public class BeforeAfterView extends View{
     private int foreground_picture;
     private Bitmap back;
     private Bitmap fore;
-    private float x = this.getWidth() / 2;
+    private float x = this.getWidth()/2;
     Context context;
+    public float scale = 1.0f;
+
+    public float c;
+
     public BeforeAfterView(Context context) {
         super(context);
         this.context = context;
@@ -93,19 +98,29 @@ public class BeforeAfterView extends View{
         Bitmap foretmp = BitmapFactory.decodeResource(getResources(), foreground_picture);
         fore = getResizedBitmap(foretmp, this.getWidth(), this.getHeight());
     }
-
+    private float deltaX = 0.0f;
     private float xReal = 0.0f;
-
+    public  float getDeltaX(){
+        return this.deltaX;
+    }
     public float getX() {
         return x;
     }
 
     public void setX(float x) {
-        this.x = x;
-        if (this.getWidth() != (int) x) {
+        if (x < 0){
+            this.x = 0;
+        }else if(x < this.getWidth()){
+            this.x = x;
+        }else{
+            this.x = this.getWidth();
+        }
+        x = this.x;
+        if (this.getWidth() > (int) x) {
             if (resizedBitmapImage != null) resizedBitmapImage.recycle();
             resizedBitmapImage = Bitmap.createBitmap(fore, (int)x, 0, this.getWidth()-(int)x, this.getHeight());
         }
+        this.invalidate();
     }
 
     public float getxReal() {
@@ -114,5 +129,11 @@ public class BeforeAfterView extends View{
 
     public void setxReal(float xReal) {
         this.xReal = xReal;
+        setX(xReal + deltaX);
+    }
+
+    public void setDeltaX(float deltaX) {
+        this.deltaX = deltaX;
+        setX(xReal + deltaX);
     }
 }

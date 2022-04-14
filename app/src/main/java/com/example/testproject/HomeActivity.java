@@ -35,16 +35,9 @@ public class HomeActivity extends AppCompatActivity {
             int preI = seekBar.getProgress();
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int deltaX = (preI - i)*beforeAfterView.getWidth()/seekBar.getMax();
-                beforeAfterView.setxReal(beforeAfterView.getxReal() - deltaX);
-                if (beforeAfterView.getX() - deltaX < 0){
-                    beforeAfterView.setX(0);
-                }else if(beforeAfterView.getX() - deltaX < beforeAfterView.getWidth()){
-                    beforeAfterView.setX(beforeAfterView.getX() - deltaX);
-                }else {
-                    beforeAfterView.setX(beforeAfterView.getWidth());
-                }
-                beforeAfterView.invalidate();
+                float deltaX = (preI - i)*seekBar.getWidth()/seekBar.getMax();
+                preI = i;
+                beforeAfterView.setxReal(beforeAfterView.getxReal() - deltaX/beforeAfterView.scale);
             }
 
             @Override

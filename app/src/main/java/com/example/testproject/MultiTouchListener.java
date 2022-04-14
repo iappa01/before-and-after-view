@@ -38,8 +38,12 @@ public class MultiTouchListener implements OnTouchListener {
         // Assume that scaling still maintains aspect ratio.
         float scale = view.getScaleX() * info.deltaScale;
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
+        beforeAfterView.scale = scale;
         view.setScaleX(scale);
         view.setScaleY(scale);
+//        beforeAfterView.setxReal(beforeAfterView.getxReal()*info.deltaScale);
+//        beforeAfterView.setDeltaX(beforeAfterView.getDeltaX()*info.deltaScale);
+
 //  Dat comment vi tam thoi chua xu ly van de rotation.
 //        float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
 //        view.setRotation(rotation);
@@ -56,15 +60,7 @@ public class MultiTouchListener implements OnTouchListener {
         view.setTranslationX(view.getTranslationX() + deltaVector[0]);
         view.setTranslationY(view.getTranslationY() + deltaVector[1]);
         if (beforeAfterView != null){
-            float tmp = beforeAfterView.getxReal() - view.getTranslationX();
-            if (tmp < 0 ){
-                beforeAfterView.setX(0);
-            }else if(tmp < beforeAfterView.getWidth()){
-                beforeAfterView.setX(tmp);
-            }else{
-                beforeAfterView.setX(beforeAfterView.getWidth());
-            }
-            beforeAfterView.invalidate();
+            beforeAfterView.setDeltaX(- view.getTranslationX()/beforeAfterView.scale);
         }
     }
 
@@ -162,6 +158,9 @@ public class MultiTouchListener implements OnTouchListener {
             mPivotX = detector.getFocusX();
             mPivotY = detector.getFocusY();
             mPrevSpanVector.set(detector.getCurrentSpanVector());
+
+
+
             return true;
         }
 
@@ -169,16 +168,17 @@ public class MultiTouchListener implements OnTouchListener {
         public boolean onScale(View view, ScaleGestureDetectorCustom detector) {
             TransformInfo info = new TransformInfo();
             info.deltaScale = isScaleEnabled ? detector.getScaleFactor() : 1.0f;
+//            beforeAfterView.setDeltaX(beforeAfterView.getDeltaX()/info.deltaScale);
 //            info.deltaAngle = isRotateEnabled ? Vector2D.getAngle(mPrevSpanVector, detector.getCurrentSpanVector()) : 0.0f;
             info.deltaX = isTranslateEnabled ? detector.getFocusX() - mPivotX : 0.0f;
             info.deltaY = isTranslateEnabled ? detector.getFocusY() - mPivotY : 0.0f;
             info.pivotX = mPivotX;
+            beforeAfterView.c = mPivotX;
             info.pivotY = mPivotY;
+            Log.e("My Message", "pivotX "+ info.pivotX );
+            Log.e("My Message", "pivotY "+ info.pivotY );
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
-            Log.e("My message","delta x: "+ info.pivotX);
-            Log.e("My message","delta x: "+ info.pivotY);
-            Log.e("My Message","   ");
             move(view, info);
             return false;
         }
