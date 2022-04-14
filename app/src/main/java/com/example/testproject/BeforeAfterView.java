@@ -108,6 +108,7 @@ public class BeforeAfterView extends View{
     }
 
     public void setX(float x) {
+        x = x + (scale-1)*(c - x)/scale;
         if (x < 0){
             this.x = 0;
         }else if(x < this.getWidth()){

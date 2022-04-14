@@ -60,7 +60,7 @@ public class MultiTouchListener implements OnTouchListener {
         view.setTranslationX(view.getTranslationX() + deltaVector[0]);
         view.setTranslationY(view.getTranslationY() + deltaVector[1]);
         if (beforeAfterView != null){
-            beforeAfterView.setDeltaX(- view.getTranslationX()/beforeAfterView.scale);
+            beforeAfterView.setDeltaX(- view.getTranslationX());
         }
     }
 
