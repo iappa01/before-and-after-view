@@ -19,9 +19,8 @@ public class BeforeAfterView extends View{
     private Bitmap fore;
     private float x = this.getWidth()/2;
     Context context;
-    public float scale = 1.0f;
-
-    public float c;
+    public float pivotX;
+    public float offsetX;
 
     public BeforeAfterView(Context context) {
         super(context);
@@ -79,18 +78,10 @@ public class BeforeAfterView extends View{
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    public int getBackground_picture() {
-        return background_picture;
-    }
-
     public void setBackground_picture(int background_picture) {
         this.background_picture = background_picture;
         Bitmap backtmp = BitmapFactory.decodeResource(getResources(), background_picture);
         back = getResizedBitmap(backtmp, this.getWidth(), this.getHeight());
-    }
-
-    public int getForeground_picture() {
-        return foreground_picture;
     }
 
     public void setForeground_picture(int foreground_picture) {
@@ -98,17 +89,10 @@ public class BeforeAfterView extends View{
         Bitmap foretmp = BitmapFactory.decodeResource(getResources(), foreground_picture);
         fore = getResizedBitmap(foretmp, this.getWidth(), this.getHeight());
     }
-    private float deltaX = 0.0f;
-    private float xReal = 0.0f;
-    public  float getDeltaX(){
-        return this.deltaX;
-    }
     public float getX() {
         return x;
     }
-
     public void setX(float x) {
-        x = x + (scale-1)*(c - x)/scale;
         if (x < 0){
             this.x = 0;
         }else if(x < this.getWidth()){
@@ -123,18 +107,13 @@ public class BeforeAfterView extends View{
         }
         this.invalidate();
     }
-
-    public float getxReal() {
-        return xReal;
+    public float curScale = 1.0f;
+    public float preScale = 1.0f;
+    public void setCurScale(float scale){
+        preScale = curScale;
+        curScale = scale;
+        String TAG = "My Message";
+//        Log.e(TAG, "preScale: "+ preScale+" curScale: "+ curScale);
     }
 
-    public void setxReal(float xReal) {
-        this.xReal = xReal;
-        setX(xReal + deltaX);
-    }
-
-    public void setDeltaX(float deltaX) {
-        this.deltaX = deltaX;
-        setX(xReal + deltaX);
-    }
 }

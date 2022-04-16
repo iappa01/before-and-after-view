@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -24,7 +25,6 @@ public class HomeActivity extends AppCompatActivity {
             public void run() {
                 beforeAfterView.setBackground_picture(R.drawable.back);
                 beforeAfterView.setForeground_picture(R.drawable.fore);
-                beforeAfterView.setxReal(50*beforeAfterView.getWidth()/100);
                 beforeAfterView.setX(50*beforeAfterView.getWidth()/100);
                 beforeAfterView.invalidate();
             }
@@ -36,8 +36,9 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                 float deltaX = (preI - i)*seekBar.getWidth()/seekBar.getMax();
+                Log.e("My Message", "seekbar change: "+ deltaX);
                 preI = i;
-                beforeAfterView.setxReal(beforeAfterView.getxReal() - deltaX/beforeAfterView.scale);
+                beforeAfterView.setX(beforeAfterView.getX() - deltaX/beforeAfterView.curScale);
             }
 
             @Override

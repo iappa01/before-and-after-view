@@ -8,7 +8,7 @@ import android.view.View.OnTouchListener;
 public class MultiTouchListener implements OnTouchListener {
 
     private static final int INVALID_POINTER_ID = -1;
-    public boolean isRotateEnabled = true;
+    public boolean isRotateEnabled = false;
     public boolean isTranslateEnabled = true;
     public boolean isScaleEnabled = true;
     public float minimumScale = 0.5f;
@@ -34,19 +34,15 @@ public class MultiTouchListener implements OnTouchListener {
 
     private static void move(View view, TransformInfo info) {
         computeRenderOffset(view, info.pivotX, info.pivotY);
-        adjustTranslation(view, info.deltaX, info.deltaY);
+        adjustTranslation(view, info.deltaX, info.deltaY, 1);
         // Assume that scaling still maintains aspect ratio.
         float scale = view.getScaleX() * info.deltaScale;
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
-        beforeAfterView.scale = scale;
+        beforeAfterView.setCurScale(scale);
         view.setScaleX(scale);
         view.setScaleY(scale);
-//        beforeAfterView.setxReal(beforeAfterView.getxReal()*info.deltaScale);
-//        beforeAfterView.setDeltaX(beforeAfterView.getDeltaX()*info.deltaScale);
-
-//  Dat comment vi tam thoi chua xu ly van de rotation.
-//        float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
-//        view.setRotation(rotation);
+        float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
+        view.setRotation(rotation);
     }
 
     static BeforeAfterView beforeAfterView;
@@ -54,35 +50,39 @@ public class MultiTouchListener implements OnTouchListener {
         beforeAfterView = view;
     }
     public static float translateX = 0.0f;
-    private static void adjustTranslation(View view, float deltaX, float deltaY) {
+    private static void adjustTranslation(View view, float deltaX, float deltaY, int a) {
+        String TAG = "My Message";
         float[] deltaVector = {deltaX, deltaY};
         view.getMatrix().mapVectors(deltaVector);
-        view.setTranslationX(view.getTranslationX() + deltaVector[0]);
         view.setTranslationY(view.getTranslationY() + deltaVector[1]);
-        if (beforeAfterView != null){
-            beforeAfterView.setDeltaX(- view.getTranslationX());
+        view.setTranslationX(view. getTranslationX() + deltaVector[0]);
+        if (a == 1){
+            float d = beforeAfterView.pivotX - beforeAfterView.getX();
+            float deltaD = d*(1 - beforeAfterView.preScale/beforeAfterView.curScale);
+            beforeAfterView.setX(beforeAfterView.getX() + deltaD - deltaX);
+        }else{
+            beforeAfterView.setX(beforeAfterView.getX() - deltaX);
         }
     }
 
     private static void computeRenderOffset(View view, float pivotX, float pivotY) {
-//        if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) {
-//            return;
-//        }
+        if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) {
+            return;
+        }
+        float[] prevPoint = {0.0f, 0.0f};
+        String TAG = "My Message";
+        view.getMatrix().mapPoints(prevPoint);
+        view.setPivotX(pivotX);
+        view.setPivotY(pivotY);
 
-//        float[] prevPoint = {0.0f, 0.0f};
-//        view.getMatrix().mapPoints(prevPoint);
+        float[] currPoint = {0.0f, 0.0f};
+        view.getMatrix().mapPoints(currPoint);
 
-//        view.setPivotX(pivotX);
-//        view.setPivotY(pivotY);
+        float offsetX = currPoint[0] - prevPoint[0];
+        float offsetY = currPoint[1] - prevPoint[1];
 
-//        float[] currPoint = {0.0f, 0.0f};
-//        view.getMatrix().mapPoints(currPoint);
-
-//        float offsetX = currPoint[0] - prevPoint[0];
-//        float offsetY = currPoint[1] - prevPoint[1];
-
-//        view.setTranslationX(view.getTranslationX() - offsetX);
-//        view.setTranslationY(view.getTranslationY() - offsetY);
+        view.setTranslationX(view.getTranslationX() + offsetX);
+        view.setTranslationY(view.getTranslationY() + offsetY);
     }
     @Override
     public boolean onTouch(View view, MotionEvent event) {
@@ -106,6 +106,7 @@ public class MultiTouchListener implements OnTouchListener {
             case MotionEvent.ACTION_MOVE: {
                 // Find the index of the active pointer and fetch its position.
                 int pointerIndex = event.findPointerIndex(mActivePointerId);
+
                 if (pointerIndex != -1) {
                     float currX = event.getX(pointerIndex);
                     float currY = event.getY(pointerIndex);
@@ -113,7 +114,7 @@ public class MultiTouchListener implements OnTouchListener {
                     // Only move if the ScaleGestureDetector isn't processing a
                     // gesture.
                     if (!mScaleGestureDetector.isInProgress()) {
-                        adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+                        adjustTranslation(view, currX - mPrevX, currY - mPrevY, 0);
                     }
                 }
 
@@ -157,10 +158,8 @@ public class MultiTouchListener implements OnTouchListener {
         public boolean onScaleBegin(View view, ScaleGestureDetectorCustom detector) {
             mPivotX = detector.getFocusX();
             mPivotY = detector.getFocusY();
+            beforeAfterView.pivotX = mPivotX;
             mPrevSpanVector.set(detector.getCurrentSpanVector());
-
-
-
             return true;
         }
 
@@ -168,15 +167,11 @@ public class MultiTouchListener implements OnTouchListener {
         public boolean onScale(View view, ScaleGestureDetectorCustom detector) {
             TransformInfo info = new TransformInfo();
             info.deltaScale = isScaleEnabled ? detector.getScaleFactor() : 1.0f;
-//            beforeAfterView.setDeltaX(beforeAfterView.getDeltaX()/info.deltaScale);
-//            info.deltaAngle = isRotateEnabled ? Vector2D.getAngle(mPrevSpanVector, detector.getCurrentSpanVector()) : 0.0f;
+            info.deltaAngle = isRotateEnabled ? Vector2D.getAngle(mPrevSpanVector, detector.getCurrentSpanVector()) : 0.0f;
             info.deltaX = isTranslateEnabled ? detector.getFocusX() - mPivotX : 0.0f;
             info.deltaY = isTranslateEnabled ? detector.getFocusY() - mPivotY : 0.0f;
             info.pivotX = mPivotX;
-            beforeAfterView.c = mPivotX;
             info.pivotY = mPivotY;
-            Log.e("My Message", "pivotX "+ info.pivotX );
-            Log.e("My Message", "pivotY "+ info.pivotY );
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
             move(view, info);

@@ -417,7 +417,6 @@ public class ScaleGestureDetectorCustom {
     /**
      * Return the previous y distance between the two pointers forming the
      * gesture in progress.
-     *
      * @return Previous distance between pointers in pixels.
      */
     public float getPreviousSpanY() {
