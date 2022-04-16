@@ -38,7 +38,7 @@ public class HomeActivity extends AppCompatActivity {
                 float deltaX = (preI - i)*seekBar.getWidth()/seekBar.getMax();
                 Log.e("My Message", "seekbar change: "+ deltaX);
                 preI = i;
-                beforeAfterView.setX(beforeAfterView.getX() - deltaX/beforeAfterView.curScale);
+                beforeAfterView.setX((float) (beforeAfterView.getX() - deltaX/beforeAfterView.curScale));
             }
 
             @Override

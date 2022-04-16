@@ -17,7 +17,7 @@ public class BeforeAfterView extends View{
     private int foreground_picture;
     private Bitmap back;
     private Bitmap fore;
-    private float x = this.getWidth()/2;
+    public float x = this.getWidth()/2;
     Context context;
     public float pivotX;
     public float offsetX;
@@ -107,9 +107,9 @@ public class BeforeAfterView extends View{
         }
         this.invalidate();
     }
-    public float curScale = 1.0f;
-    public float preScale = 1.0f;
-    public void setCurScale(float scale){
+    public double curScale = 1.0f;
+    public double preScale = 1.0f;
+    public void setCurScale(double scale){
         preScale = curScale;
         curScale = scale;
         String TAG = "My Message";
