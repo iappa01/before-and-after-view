@@ -33,35 +33,26 @@ public class MultiTouchListener implements OnTouchListener {
     }
 
     private static void move(View view, TransformInfo info) {
-        computeRenderOffset(view, info.pivotX, info.pivotY);
-//        adjustTranslation(view, info.deltaX, info.deltaY, 1);
+//        computeRenderOffset(view, info.pivotX, info.pivotY);
+        adjustTranslation(view, info.deltaX, info.deltaY);
 
-        String TAG = "My Message";
-        float[] deltaVector = {info.deltaX, info.deltaY};
-        view.getMatrix().mapVectors(deltaVector);
-        view.setTranslationY(view.getTranslationY() + deltaVector[1]);
-        view.setTranslationX(view. getTranslationX() + deltaVector[0]);
-
-        Log.i("lienlq", "TranX: " + view.getTranslationX());
 
         // Assume that scaling still maintains aspect ratio.
         float scale = view.getScaleX() * info.deltaScale;
         scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
 
-        Log.i("lienlq", "Scale: " + scale);
-
-        beforeAfterView.setCurScale(scale);
-
-        double d = beforeAfterView.pivotX - beforeAfterView.getX();
-        double deltaD = d*(1 - beforeAfterView.preScale/beforeAfterView.curScale);
-        beforeAfterView.setX((float) (beforeAfterView.getX() + deltaD - info.deltaX));
-
-        Log.i("lienlq", "X: " + beforeAfterView.x);
-
+        // Tam thoi comment lai 2 dong duoi de test kha nang di chuyen anh bang 2 ngon tay
         view.setScaleX(scale);
         view.setScaleY(scale);
+        beforeAfterView.setCurScale(scale);
 
+        // Cong thuc tinh deltaD la dung, neu sai chi co sai o cach lay pivotX
+        float d = view.getPivotX() - beforeAfterView.getX();
+        float deltaD = d*(1 - beforeAfterView.preScale/beforeAfterView.curScale);
 
+        // Tru deltaX giup thanh giua khong di chuyen khi xu ly thao tac dung 2 ngon tay di chuyen anh.
+//        beforeAfterView.setX(beforeAfterView.getX() - info.deltaX/beforeAfterView.curScale);
+        beforeAfterView.setX(beforeAfterView.getX() + deltaD - info.deltaX/beforeAfterView.curScale);
 //        float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
 //        view.setRotation(rotation);
     }
@@ -70,38 +61,18 @@ public class MultiTouchListener implements OnTouchListener {
     public static void setBeforeAfterView(BeforeAfterView view){
         beforeAfterView = view;
     }
-    public static float translateX = 0.0f;
-    private static void adjustTranslation(View view, float deltaX, float deltaY, int a) {
-        String TAG = "My Message";
+    private static void adjustTranslation(View view, float deltaX, float deltaY) {
         float[] deltaVector = {deltaX, deltaY};
         view.getMatrix().mapVectors(deltaVector);
-        view.setTranslationY(view.getTranslationY() + deltaVector[1]);
-        view.setTranslationX(view. getTranslationX() + deltaVector[0]);
-        if (a == 1){
-//            float d = beforeAfterView.pivotX - beforeAfterView.getX();
-//            float deltaD = d*(1 - beforeAfterView.preScale/beforeAfterView.curScale);
-//            beforeAfterView.setX(beforeAfterView.getX() + deltaD - deltaX);
-        }else{
-            beforeAfterView.setX(beforeAfterView.getX() - deltaX);
-        }
+        view.setTranslationY(view.getTranslationY() + deltaY);
+        view.setTranslationX(view. getTranslationX() + deltaX);
     }
 
     private static void computeRenderOffset(View view, float pivotX, float pivotY) {
-        /*
-        dstPoint[0] = mc[Matrix.MSCALE_X] * srcPoint[0] +
-        mc[Matrix.MSKEW_X] * srcPoint[1] +
-        mc[Matrix.MTRANS_X]
-
-dstPoint[1] = mc[Matrix.MSKEW_Y] * srcPoint[0] +
-        mc[Matrix.MSCALE_Y] * srcPoint[1] +
-        mc[Matrix.MTRANS_Y]
-         */
-
         if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) {
             return;
         }
         float[] prevPoint = {0.0f, 0.0f};
-        String TAG = "My Message";
         view.getMatrix().mapPoints(prevPoint);
 
         view.setPivotX(pivotX);
@@ -146,7 +117,10 @@ dstPoint[1] = mc[Matrix.MSKEW_Y] * srcPoint[0] +
                     // Only move if the ScaleGestureDetector isn't processing a
                     // gesture.
                     if (!mScaleGestureDetector.isInProgress()) {
-                        adjustTranslation(view, currX - mPrevX, currY - mPrevY, 0);
+                        adjustTranslation(view, currX - mPrevX, currY - mPrevY);
+
+                        //Dung de di chuyen anh khi cham 1 ngon tay. Xong
+                        beforeAfterView.setX(beforeAfterView.getX() - (currX - mPrevX)/beforeAfterView.curScale);
                     }
                 }
 
@@ -185,13 +159,18 @@ dstPoint[1] = mc[Matrix.MSKEW_Y] * srcPoint[0] +
         private float mPivotX;
         private float mPivotY;
         private Vector2D mPrevSpanVector = new Vector2D();
-
+        String TAG = "my message";
         @Override
         public boolean onScaleBegin(View view, ScaleGestureDetectorCustom detector) {
             mPivotX = detector.getFocusX();
             mPivotY = detector.getFocusY();
-            beforeAfterView.pivotX = mPivotX;
+
+            // Tam thoi dung pivot default de thu cong thuc
+//            beforeAfterView.pivotX = mPivotX;
             mPrevSpanVector.set(detector.getCurrentSpanVector());
+
+            // Danh dau giem bat dau thao tac cham 2 ngon tay
+            beforeAfterView.count = 0;
             return true;
         }
 
@@ -206,8 +185,20 @@ dstPoint[1] = mc[Matrix.MSKEW_Y] * srcPoint[0] +
             info.pivotY = mPivotY;
             info.minimumScale = minimumScale;
             info.maximumScale = maximumScale;
+
+            // Count dang dung de test
+            // Tai sao anh bi giat
+            // Tai sao vi tri getFocus bi thay doi bat thuong
+            beforeAfterView.count++;
             move(view, info);
             return false;
+        }
+
+        @Override
+        public void onScaleEnd(View view, ScaleGestureDetectorCustom detector) {
+            super.onScaleEnd(view, detector);
+            // Danh giau diem ket thuc thao tac cham 2 ngon tay
+            beforeAfterView.count = 0;
         }
     }
 

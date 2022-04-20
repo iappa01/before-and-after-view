@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
 public class BeforeAfterView extends View{
+    int count;
     private int background_picture;
     private int foreground_picture;
     private Bitmap back;
@@ -29,7 +30,7 @@ public class BeforeAfterView extends View{
 
     public BeforeAfterView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.context =context;
+        this.context = context;
     }
 
     public BeforeAfterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -107,13 +108,10 @@ public class BeforeAfterView extends View{
         }
         this.invalidate();
     }
-    public double curScale = 1.0f;
-    public double preScale = 1.0f;
-    public void setCurScale(double scale){
+    public float curScale = 1.0f;
+    public float preScale = 1.0f;
+    public void setCurScale(float scale){
         preScale = curScale;
         curScale = scale;
-        String TAG = "My Message";
-//        Log.e(TAG, "preScale: "+ preScale+" curScale: "+ curScale);
     }
-
 }

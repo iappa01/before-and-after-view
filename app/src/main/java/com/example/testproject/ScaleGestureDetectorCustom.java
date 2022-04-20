@@ -56,12 +56,6 @@ public class ScaleGestureDetectorCustom {
 
 
 
-
-
-
-
-
-
     public ScaleGestureDetectorCustom(OnScaleGestureListener listener) {
         mListener = listener;
         mCurrSpanVector = new Vector2D();
@@ -187,7 +181,6 @@ public class ScaleGestureDetectorCustom {
                         final int index = event.findPointerIndex(activeId);
                         mFocusX = event.getX(index);
                         mFocusY = event.getY(index);
-
                         mListener.onScaleEnd(view, this);
                         reset();
                         mActiveId0 = activeId;
