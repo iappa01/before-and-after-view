@@ -29,8 +29,10 @@ public class HomeActivity extends AppCompatActivity {
                 beforeAfterView.invalidate();
             }
         }, 1000);
-        MultiTouchListener.setBeforeAfterView(beforeAfterView);
-        beforeAfterView.setOnTouchListener(new MultiTouchListener());
+        MultiTouchListener multiTouchListener = new MultiTouchListener();
+        multiTouchListener.setBeforeAfterView(beforeAfterView);
+
+        beforeAfterView.setOnTouchListener(multiTouchListener);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int preI = seekBar.getProgress();
             @Override

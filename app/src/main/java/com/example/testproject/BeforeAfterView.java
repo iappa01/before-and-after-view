@@ -20,8 +20,6 @@ public class BeforeAfterView extends View{
     private Bitmap fore;
     public float x = this.getWidth()/2;
     Context context;
-    public float pivotX;
-    public float offsetX;
 
     public BeforeAfterView(Context context) {
         super(context);
@@ -40,7 +38,6 @@ public class BeforeAfterView extends View{
 
     Paint paint = new Paint();
     PorterDuff.Mode mode = PorterDuff.Mode.DST_OVER;
-    PorterDuffXfermode porterDuffXfermode = new PorterDuffXfermode(mode);
     Bitmap resizedBitmapImage;
     @Override
     protected void onDraw(Canvas canvas) {
