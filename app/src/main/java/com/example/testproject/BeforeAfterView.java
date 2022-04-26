@@ -18,6 +18,8 @@ public class BeforeAfterView extends View{
     private int foreground_picture;
     private Bitmap bitmapBefore;
     private Bitmap bitmapAfter;
+    String stringBefore = "Before";
+    String stringAfter = "After";
     public float x = 0;
     public BeforeAfterView(Context context) {
         super(context);
@@ -51,14 +53,19 @@ public class BeforeAfterView extends View{
     }
     Paint paint = new Paint();
     Bitmap resizedBitmapImage;
+    Paint stringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        stringPaint.setTextSize(50);
+        stringPaint.setColor(Color.YELLOW);
         if (bitmapBefore != null) {
             canvas.drawBitmap(bitmapBefore, 0, 0, paint);
+//            canvas.drawText(stringBefore,100,100,stringPaint);
         }
         if (resizedBitmapImage != null) {
             canvas.drawBitmap(resizedBitmapImage, x, 0, paint);
+//            canvas.drawText(stringAfter,500,100,stringPaint);
         }
     }
 
@@ -83,8 +90,8 @@ public class BeforeAfterView extends View{
     public void setBackground_picture(int background_picture) {
         this.background_picture = background_picture;
         Bitmap backtmp = BitmapFactory.decodeResource(getResources(), background_picture);
-        pictureHeight = backtmp.getHeight();
-        pictureWidth = backtmp.getWidth();
+//        pictureHeight = backtmp.getHeight();
+//        pictureWidth = backtmp.getWidth();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

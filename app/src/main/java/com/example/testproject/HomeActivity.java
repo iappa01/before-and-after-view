@@ -19,21 +19,20 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        BeforeAfterView beforeAfterView = (BeforeAfterView) findViewById(R.id.bfat);
-        beforeAfterView.setBackground_picture(R.drawable.back);
-        beforeAfterView.setForeground_picture(R.drawable.fore);
+        BeforeAfterViewGroup beforeAfterViewGroup = (BeforeAfterViewGroup) findViewById(R.id.bag);
+        beforeAfterViewGroup.setBeforeImage(R.drawable.back);
+        beforeAfterViewGroup.setAfterImage(R.drawable.fore);
         BeforeAfterSeekBar beforeAfterSeekBar = (BeforeAfterSeekBar) findViewById(R.id.bfat_sb);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                beforeAfterSeekBar.setDistanceMax(beforeAfterView.getWidth()/2);
+                beforeAfterSeekBar.setDistanceMax(beforeAfterViewGroup.getWidth()/2);
             }
         },1000);
         beforeAfterSeekBar.setOnHorizontalMoveListener(new BeforeAfterSeekBar.OnHorizontalMoveListener() {
             @Override
             public void onChange(float deltaX) {
-                beforeAfterView.setX(beforeAfterView.getX() + deltaX / beforeAfterView.curScale);
+                beforeAfterViewGroup.setBeforeAfterX(beforeAfterViewGroup.getBeforeAfterX() + deltaX / beforeAfterViewGroup.getCurScale());
             }
         });
     }
