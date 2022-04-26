@@ -3,8 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/caoth/AndroidStudioProjects/TestProject/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
+        <entry key="..\:/Users/caoth/AndroidStudioProjects/TestProject/app/src/main/res/drawable/ba_seekbar_thumb.xml" value="0.132" />
+        <entry key="..\:/Users/caoth/AndroidStudioProjects/TestProject/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/Users/caoth/AndroidStudioProjects/TestProject/app/src/main/res/layout/activity_home.xml" value="0.11145833333333334" />
         <entry key="..\:/Users/caoth/AndroidStudioProjects/TestProject/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/caoth/AndroidStudioProjects/TestProject/app/src/main/res/layout/before_after_seekbar.xml" value="0.12135416666666667" />
       </map>
     </option>
   </component>

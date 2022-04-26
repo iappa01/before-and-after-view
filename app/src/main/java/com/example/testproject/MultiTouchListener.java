@@ -22,34 +22,12 @@ public class MultiTouchListener implements OnTouchListener {
         mScaleGestureDetector = new ScaleGestureDetectorCustom(new ScaleGestureListener());
     }
 
-    private static float adjustAngle(float degrees) {
-        if (degrees > 180.0f) {
-            degrees -= 360.0f;
-        } else if (degrees < -180.0f) {
-            degrees += 360.0f;
-        }
-
-        return degrees;
-    }
-
-    private void move(View view, TransformInfo info) {
-//        computeRenderOffset(view, info.pivotX, info.pivotY);
-        float scale = view.getScaleX() * info.deltaScale;
-        scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
-
-        beforeAfterView.setCurScale(scale);
-
-        float deltaX = info.deltaX;
-        float deltaY = info.deltaY;
-
-        // Khoang gioi han co the dich chuyen so voi goc
-        float deltaMaxW = view.getWidth()*(beforeAfterView.curScale - 1)/ beforeAfterView.curScale;
-        float deltaMaxH = view.getHeight()*(beforeAfterView.curScale - 1)/ beforeAfterView.curScale;
-
+    private float adjustTranslate(View view,float deltaX, float deltaY){
+        float deltaMaxW = view.getWidth()*(beforeAfterView.curScale - 1.0f)/(2);
+        float deltaMaxH = view.getHeight()*(beforeAfterView.curScale - 1.0f)/(2);
         float deltaW = view.getTranslationX() + deltaX;
         float deltaH = view.getTranslationY() + deltaY;
 
-        // Ti lam sau
         if (deltaW < -deltaMaxW){
             deltaX = -deltaMaxW - view.getTranslationX();
         }else if(deltaW > deltaMaxW){
@@ -62,7 +40,20 @@ public class MultiTouchListener implements OnTouchListener {
             deltaY = deltaMaxH - view.getTranslationY();
         }
         view.setTranslationY(view.getTranslationY() + deltaY);
-        view.setTranslationX(view. getTranslationX() + deltaX);
+        view.setTranslationX(view.getTranslationX() + deltaX);
+        return deltaX;
+    }
+
+    private void move(View view, TransformInfo info) {
+        float scale = view.getScaleX() * info.deltaScale;
+        scale = Math.max(info.minimumScale, Math.min(info.maximumScale, scale));
+
+        beforeAfterView.setCurScale(scale);
+
+        float deltaX = info.deltaX;
+        float deltaY = info.deltaY;
+
+        deltaX = adjustTranslate(view, deltaX, deltaY);
 
         view.setScaleX(scale);
         view.setScaleY(scale);
@@ -72,8 +63,6 @@ public class MultiTouchListener implements OnTouchListener {
         float d = view.getPivotX() - beforeAfterView.getX();
         float deltaD = d*(1 - beforeAfterView.preScale/beforeAfterView.curScale);
         beforeAfterView.setX(beforeAfterView.getX() + deltaD - deltaX/beforeAfterView.curScale);
-//        float rotation = adjustAngle(view.getRotation() + info.deltaAngle);
-//        view.setRotation(rotation);
     }
 
     BeforeAfterView beforeAfterView;
@@ -117,28 +106,10 @@ public class MultiTouchListener implements OnTouchListener {
                         float deltaY = currY - mPrevY;
 
                         // Khoang gioi han co the dich chuyen so voi goc
-                        float deltaMaxW = view.getWidth()*(beforeAfterView.curScale - 1)/ beforeAfterView.curScale;
-                        float deltaMaxH = view.getHeight()*(beforeAfterView.curScale - 1)/ beforeAfterView.curScale;
 
-                        float deltaW = view.getTranslationX() + deltaX;
-                        float deltaH = view.getTranslationY() + deltaY;
 
-                        // Ti lam sau
-                        if (deltaW < -deltaMaxW){
-                            deltaX = -deltaMaxW - view.getTranslationX();
-                        }else if(deltaW > deltaMaxW){
-                            deltaX = deltaMaxW - view.getTranslationX();
-                        }
-
-                        if (deltaH < -deltaMaxH){
-                            deltaY = -deltaMaxH - view.getTranslationY();
-                        }else if(deltaH > deltaMaxH){
-                            deltaY = deltaMaxH - view.getTranslationY();
-                        }
-
-                        view.setTranslationY(view.getTranslationY() + deltaY);
-                        view.setTranslationX(view. getTranslationX() + deltaX);
-                        //Dung de di chuyen anh khi cham 1 ngon tay. Xong
+                        deltaX = adjustTranslate(view, deltaX, deltaY);
+                        //Dung de di chuyen anh khi cham 1 ngon tay.
                         beforeAfterView.setX(beforeAfterView.getX() - deltaX/beforeAfterView.curScale);
                     }
                 }
@@ -207,7 +178,6 @@ public class MultiTouchListener implements OnTouchListener {
         @Override
         public void onScaleEnd(View view, ScaleGestureDetectorCustom detector) {
             super.onScaleEnd(view, detector);
-            beforeAfterView.count = 0;
         }
     }
 

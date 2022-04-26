@@ -1,56 +1,67 @@
 package com.example.testproject;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
 public class BeforeAfterView extends View{
-    int count;
     private int background_picture;
     private int foreground_picture;
-    private Bitmap back;
-    private Bitmap fore;
-    public float x = this.getWidth()/2;
-    Context context;
-
+    private Bitmap bitmapBefore;
+    private Bitmap bitmapAfter;
+    public float x = 0;
     public BeforeAfterView(Context context) {
         super(context);
-        this.context = context;
+        MultiTouchListener multiTouchListener = new MultiTouchListener();
+        multiTouchListener.setBeforeAfterView(this);
+        this.setOnTouchListener(multiTouchListener);
     }
 
     public BeforeAfterView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        this.context = context;
+        MultiTouchListener multiTouchListener = new MultiTouchListener();
+        multiTouchListener.setBeforeAfterView(this);
+        this.setOnTouchListener(multiTouchListener);
+        TypedArray a = context.obtainStyledAttributes(attrs,R.styleable.BeforeAfterView);
+        try {
+            x = a.getFloat(R.styleable.BeforeAfterView_bav_setX,0);
+        }finally {
+            a.recycle();
+        }
     }
-
     public BeforeAfterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.context = context;
+        MultiTouchListener multiTouchListener = new MultiTouchListener();
+        multiTouchListener.setBeforeAfterView(this);
+        this.setOnTouchListener(multiTouchListener);
     }
-
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        x = this.getWidth()/2;
+    }
     Paint paint = new Paint();
-    PorterDuff.Mode mode = PorterDuff.Mode.DST_OVER;
     Bitmap resizedBitmapImage;
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
-        if (back != null) {
-            canvas.drawBitmap(back, 0, 0, paint);
+        if (bitmapBefore != null) {
+            canvas.drawBitmap(bitmapBefore, 0, 0, paint);
         }
         if (resizedBitmapImage != null) {
             canvas.drawBitmap(resizedBitmapImage, x, 0, paint);
         }
-
     }
+
     public Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight) {
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -66,27 +77,35 @@ public class BeforeAfterView extends View{
         bm.recycle();
         return resizedBitmap;
     }
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-    }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-    }
-
+    private float pictureWidth;
+    private float pictureHeight;
     public void setBackground_picture(int background_picture) {
         this.background_picture = background_picture;
         Bitmap backtmp = BitmapFactory.decodeResource(getResources(), background_picture);
-        back = getResizedBitmap(backtmp, this.getWidth(), this.getHeight());
+        pictureHeight = backtmp.getHeight();
+        pictureWidth = backtmp.getWidth();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bitmapBefore = getResizedBitmap(backtmp, BeforeAfterView.this.getWidth(), BeforeAfterView.this.getHeight());
+//                setX(BeforeAfterView.this.x);
+            }
+        },1000);
     }
 
     public void setForeground_picture(int foreground_picture) {
         this.foreground_picture = foreground_picture;
         Bitmap foretmp = BitmapFactory.decodeResource(getResources(), foreground_picture);
-        fore = getResizedBitmap(foretmp, this.getWidth(), this.getHeight());
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bitmapAfter = getResizedBitmap(foretmp, BeforeAfterView.this.getWidth(), BeforeAfterView.this.getHeight());
+                setX(BeforeAfterView.this.x);
+            }
+        },1000);
     }
+
     public float getX() {
         return x;
     }
@@ -101,10 +120,13 @@ public class BeforeAfterView extends View{
         x = this.x;
         if (this.getWidth() > (int) x) {
             if (resizedBitmapImage != null) resizedBitmapImage.recycle();
-            resizedBitmapImage = Bitmap.createBitmap(fore, (int)x, 0, this.getWidth()-(int)x, this.getHeight());
+            if (bitmapAfter != null){
+                resizedBitmapImage = Bitmap.createBitmap(bitmapAfter, (int)x, 0, this.getWidth()-(int)x, this.getHeight());
+            }
         }
         this.invalidate();
     }
+
     public float curScale = 1.0f;
     public float preScale = 1.0f;
     public void setCurScale(float scale){

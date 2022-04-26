@@ -6,9 +6,11 @@ import android.os.Bundle;
 
 import android.os.Handler;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.SeekBar;
 
 public class HomeActivity extends AppCompatActivity {
@@ -19,38 +21,19 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         BeforeAfterView beforeAfterView = (BeforeAfterView) findViewById(R.id.bfat);
-        SeekBar seekBar = (SeekBar) findViewById(R.id.seekbar);
+        beforeAfterView.setBackground_picture(R.drawable.back);
+        beforeAfterView.setForeground_picture(R.drawable.fore);
+        BeforeAfterSeekBar beforeAfterSeekBar = (BeforeAfterSeekBar) findViewById(R.id.bfat_sb);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                beforeAfterView.setBackground_picture(R.drawable.back);
-                beforeAfterView.setForeground_picture(R.drawable.fore);
-                beforeAfterView.setX(50*beforeAfterView.getWidth()/100);
-                beforeAfterView.invalidate();
+                beforeAfterSeekBar.setDistanceMax(beforeAfterView.getWidth()/2);
             }
-        }, 1000);
-        MultiTouchListener multiTouchListener = new MultiTouchListener();
-        multiTouchListener.setBeforeAfterView(beforeAfterView);
-
-        beforeAfterView.setOnTouchListener(multiTouchListener);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int preI = seekBar.getProgress();
+        },1000);
+        beforeAfterSeekBar.setOnHorizontalMoveListener(new BeforeAfterSeekBar.OnHorizontalMoveListener() {
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                float deltaX = (preI - i)*seekBar.getWidth()/seekBar.getMax();
-                Log.e("My Message", "seekbar change: "+ deltaX);
-                preI = i;
-                beforeAfterView.setX((float) (beforeAfterView.getX() - deltaX/beforeAfterView.curScale));
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
+            public void onChange(float deltaX) {
+                beforeAfterView.setX(beforeAfterView.getX() + deltaX / beforeAfterView.curScale);
             }
         });
     }
