@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BeforeAfterView">
+        <attr name="bav_setX" format="float" />
+    </declare-styleable>
+
+    <declare-styleable name="BeforeAfter">
+        <attr name="typeScale" format="integer" />
+        <attr name="color_slider_line" format="color" />
+        <attr name="width_slider_line" format="dimension"/>
+        <attr name="src_slider_thumb" format="reference"/>
+        <attr name="margin_left_text_before" format="dimension"/>
+        <attr name="margin_right_text_after" format="dimension"/>
+        <attr name="margin_top_text" format="dimension"/>
+
+    </declare-styleable>
+</resources>

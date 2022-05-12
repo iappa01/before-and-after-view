@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="after">After </string>
+    <string name="before">Before</string>
+    <string name="slide">Slide to see\nthe differences</string>
+</resources>

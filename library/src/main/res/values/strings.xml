@@ -1,0 +1,5 @@
+<resources>
+    <string name="after">After </string>
+    <string name="before">Before</string>
+    <string name="slide">Slide to see\nthe differences</string>
+</resources>
