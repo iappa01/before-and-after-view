@@ -4,25 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
-    android:background="#E5E5E5">
+    android:background="#E5E5E5"
+    tools:context=".HomeActivity">
 
-    <com.example.testproject.BeforeAfterViewGroup
-        android:id="@+id/bag"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <com.mobiai.views.beforeafter.BeforeAfter
+        android:id="@+id/before_after"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:color_slider_line="#2196F3"
         app:layout_constraintTop_toTopOf="parent"
-        />
-
-
-    <com.example.testproject.BeforeAfterSeekBar
-        android:id="@+id/bfat_sb"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:margin_left_text_before="16dp"
+        app:margin_right_text_after="16dp"
+        app:margin_top_text="300dp"
+        app:src_slider_thumb="@drawable/ic_thumb"
+        app:typeScale="1"
+        app:width_slider_line="2dp"></com.mobiai.views.beforeafter.BeforeAfter>
 </androidx.constraintlayout.widget.ConstraintLayout>

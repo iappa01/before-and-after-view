@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="after">후에</string>
+    <string name="before">전에</string>
+    <string name="slide">슬라이드하여\n차이점을 확인하세요.</string>
+</resources>
