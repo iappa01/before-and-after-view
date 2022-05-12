@@ -16,6 +16,7 @@ public class BeforeAfterView extends View {
     private Bitmap normalScaleAfterImage;
     public float x = 0;
     int scaleType = 0;
+    private Bitmap afterImageTmp;
 
     public BeforeAfterView(Context context) {
         super(context);
@@ -60,8 +61,12 @@ public class BeforeAfterView extends View {
         if (normalScaleBeforeImage != null) {
             canvas.drawBitmap(normalScaleBeforeImage, 0, 0, paint);
         }
-        if (viewableImage != null) {
-            canvas.drawBitmap(viewableImage, x1, 0, paint);
+        if (viewableImage != null){
+            if (!viewableImage.isRecycled()) {
+                canvas.drawBitmap(viewableImage, x1, 0, paint);
+            } else{
+            }
+        }else{
         }
     }
 
@@ -76,18 +81,20 @@ public class BeforeAfterView extends View {
                 normalScaleBeforeImage = Bitmap.createScaledBitmap(standardizedSizeImage,BeforeAfterView.this.getWidth(), BeforeAfterView.this.getHeight(), true );
                 requestLayout();
             }
-        }, 1000);
+        }, 0);
     }
+
 
     public void setAfterImage(Bitmap afterImage) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 // Normalize the size of picture
-                normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,BeforeAfterView.this.getWidth(), BeforeAfterView.this.getHeight(), true );
+                afterImageTmp = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+                normalScaleAfterImage = Bitmap.createScaledBitmap(afterImageTmp,BeforeAfterView.this.getWidth(), BeforeAfterView.this.getHeight(), true );
                 setX(BeforeAfterView.this.x);
             }
-        }, 1000);
+        }, 0);
     }
 
     public float getX() {
@@ -109,9 +116,10 @@ public class BeforeAfterView extends View {
             x1 = this.getWidth();
         }
         if (this.getWidth() > (int) x1) {
-            if (viewableImage != null) viewableImage.recycle();
-            if (normalScaleAfterImage != null) {
-                viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) x1, 0, BeforeAfterView.this.getWidth() - (int) x1, BeforeAfterView.this.getHeight());
+
+            if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
+                if (viewableImage != null) viewableImage.recycle();
+                viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) x1, 0, BeforeAfterView.this.getWidth() - (int) x1, Math.min(BeforeAfterView.this.getHeight(),normalScaleAfterImage.getHeight()));
             }
         }
         this.invalidate();

@@ -317,7 +317,7 @@ public class ScaleGestureDetectorCustom {
      * Get the X coordinate of the current gesture's focal point.
      * If a gesture is in progress, the focal point is directly between
      * the two pointers forming the gesture.
-     * If a gesture is ending, the focal point is the location of the
+     * If sa gesture is ending, the focal point is the location of the
      * remaining pointer on the screen.
      * If {@link #isInProgress()} would return false, the result of this
      * function is undefined.
