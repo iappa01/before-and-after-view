@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -40,13 +41,12 @@ public class BeforeAfterText extends androidx.appcompat.widget.AppCompatImageVie
         }
     }
 
-
     float x;
     Bitmap viewableImageAfter;
     Bitmap viewableImageBefore;
     public void setX(float x) {
-        if (x <= 0) {
-            this.x = 0;
+        if (x < 1) {
+            this.x = 1;
         } else if (x < this.getWidth()) {
             this.x = x;
         } else {
@@ -54,7 +54,10 @@ public class BeforeAfterText extends androidx.appcompat.widget.AppCompatImageVie
         }
         x = this.x;
         if (this.getWidth() > (int) x) {
-            if (viewableImageAfter != null) viewableImageAfter.recycle();
+            if (viewableImageBefore != null && !viewableImageAfter.isRecycled()){
+                viewableImageAfter.recycle();
+            }else{
+            }
             if (afterTextImage != null) {
                 viewableImageAfter = Bitmap.createBitmap(afterTextImage, (int) x, 0, BeforeAfterText.this.getWidth() - (int) x, BeforeAfterText.this.getHeight());
             }

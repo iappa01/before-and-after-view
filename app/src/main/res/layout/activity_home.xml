@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:margin_left_text_before="16dp"
         app:margin_right_text_after="16dp"
-        app:margin_top_text="300dp"
+        app:margin_top_text="16dp"
         app:src_slider_thumb="@drawable/ic_thumb"
         app:typeScale="1"
         app:width_slider_line="2dp"></com.mobiai.views.beforeafter.BeforeAfter>
