@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.Nullable;
@@ -15,6 +16,8 @@ public class BeforeAfterSlider extends RelativeLayout {
     View line;
     View view;
     float prePivotX;
+    LinearLayout llText;
+
     OnMoveHorizontalListener onMoveHorizontalListener;
 
     OnTouchListener sliderMoveHandle = new OnTouchListener() {
@@ -30,6 +33,7 @@ public class BeforeAfterSlider extends RelativeLayout {
                     deltaX = moveHorizontal(deltaX);
                     if (onMoveHorizontalListener != null){
                         onMoveHorizontalListener.onChange(deltaX);
+                        llText.setVisibility(GONE);
                     }
                     break;
                 case MotionEvent.ACTION_UP:
@@ -44,6 +48,8 @@ public class BeforeAfterSlider extends RelativeLayout {
         super(context, attrs);
         view = LayoutInflater.from(context).inflate(R.layout.before_after_seekbar,this);
         thumb = (ImageView) view.findViewById(R.id.ba_seekbar_thumb);
+        llText = view.findViewById(R.id.txt_slide);
+
         line = view.findViewById(R.id.ba_seekbar_line);
         line.setOnTouchListener(sliderMoveHandle);
         thumb.setOnTouchListener(sliderMoveHandle);
@@ -80,5 +86,9 @@ public class BeforeAfterSlider extends RelativeLayout {
 
     public void setHighOfThumb(float hight){
         thumb.setTranslationY(-hight);
+    }
+
+    public void setHighOfLlText(float hight){
+        llText.setTranslationY(-hight);
     }
 }

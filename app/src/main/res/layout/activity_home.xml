@@ -18,5 +18,6 @@
         app:margin_top_text="16dp"
         app:src_slider_thumb="@drawable/ic_thumb"
         app:typeScale="1"
+        app:visibility_text="false"
         app:width_slider_line="2dp"></com.mobiai.views.beforeafter.BeforeAfter>
 </androidx.constraintlayout.widget.ConstraintLayout>

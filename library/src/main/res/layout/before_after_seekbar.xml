@@ -13,13 +13,40 @@
             android:layout_centerInParent="true"
             android:background="@android:color/holo_red_dark"
            />
+        <LinearLayout
+            android:layout_centerHorizontal="true"
+            android:id="@+id/txt_slide"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ba_seekbar_thumb">
+
+            <TextView
+                android:textColor="@color/black"
+                android:padding="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:background="@drawable/bg_text"
+                android:gravity="center"
+                android:text="@string/slide" />
+
+            <View
+                android:layout_gravity="center"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:background="@drawable/shape_arrow_down"/>
+
+        </LinearLayout>
+
+
         <ImageView
+            android:layout_centerHorizontal="true"
             android:id="@+id/ba_seekbar_thumb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_thumb"
-            />
+            android:src="@drawable/ic_thumb" />
 
     </RelativeLayout>
 
