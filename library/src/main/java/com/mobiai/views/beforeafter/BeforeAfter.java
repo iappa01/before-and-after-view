@@ -27,6 +27,8 @@ public class BeforeAfter extends FrameLayout {
     int marginLeftBeforeText;
     int marginRightAfterText;
     int marginTopText;
+    boolean visibilityText;
+
 
     BeforeAfterView beforeAfterView;
     BeforeAfterSlider beforeAfterSlider;
@@ -50,6 +52,7 @@ public class BeforeAfter extends FrameLayout {
         marginLeftBeforeText = typedArray.getDimensionPixelSize(R.styleable.BeforeAfter_margin_left_text_before, 2);
         marginRightAfterText = typedArray.getDimensionPixelSize(R.styleable.BeforeAfter_margin_right_text_after, 2);
         marginTopText = typedArray.getDimensionPixelSize(R.styleable.BeforeAfter_margin_top_text, 2);
+        visibilityText = typedArray.getBoolean(R.styleable.BeforeAfter_visibility_text, false);
 
         if (srcSliderThumb != 0) {
             Drawable drawable = AppCompatResources.getDrawable(getContext(), srcSliderThumb);
@@ -72,6 +75,12 @@ public class BeforeAfter extends FrameLayout {
         textAfter.setMargins(0, marginTopText, marginRightAfterText, 0);
         bitMapConverter.textViewAfter.setLayoutParams(textAfter);
         bitMapConverter.textViewAfter.requestLayout();
+
+        if (visibilityText){
+            beforeAfterSlider.llText.setVisibility(VISIBLE);
+        }else {
+            beforeAfterSlider.llText.setVisibility(GONE);
+        }
 
         typedArray.recycle();
 
@@ -134,6 +143,7 @@ public class BeforeAfter extends FrameLayout {
         beforeAfterView.parentHeight = this.getHeight();
         beforeAfterView.parentWidth = this.getWidth();
         setHighThumb(this.getHeight()/5);
+        setHighLayoutText(this.getHeight()/ 5 + 10f);
     }
 
     /**
@@ -182,5 +192,9 @@ public class BeforeAfter extends FrameLayout {
      */
     public void setHighThumb(float hight){
         beforeAfterSlider.setHighOfThumb(hight);
+    }
+
+    public void setHighLayoutText(float hight){
+        beforeAfterSlider.setHighOfLlText(hight);
     }
 }

@@ -12,6 +12,7 @@
         <attr name="margin_left_text_before" format="dimension"/>
         <attr name="margin_right_text_after" format="dimension"/>
         <attr name="margin_top_text" format="dimension"/>
+        <attr name="visibility_text" format="boolean"/>
 
     </declare-styleable>
 </resources>
