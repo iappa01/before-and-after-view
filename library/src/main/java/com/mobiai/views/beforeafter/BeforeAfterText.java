@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 public class BeforeAfterText extends androidx.appcompat.widget.AppCompatImageView {

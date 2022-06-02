@@ -91,4 +91,6 @@ public class BeforeAfterSlider extends RelativeLayout {
     public void setHighOfLlText(float hight){
         llText.setTranslationY(-hight);
     }
+
+
 }

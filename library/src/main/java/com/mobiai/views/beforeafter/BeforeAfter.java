@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-/**
- * Created by dungHt on
- */
-
 public class BeforeAfter extends FrameLayout {
     int widthSliderLine;
     int srcSliderThumb;
@@ -28,7 +23,8 @@ public class BeforeAfter extends FrameLayout {
     int marginRightAfterText;
     int marginTopText;
     boolean visibilityText;
-
+    int distanceMax = -1;
+    int viewWidth;
 
     BeforeAfterView beforeAfterView;
     BeforeAfterSlider beforeAfterSlider;
@@ -84,7 +80,6 @@ public class BeforeAfter extends FrameLayout {
 
         typedArray.recycle();
 
-        setDistanceMax();
         setOnHorizontalMove();
     }
 
@@ -115,13 +110,9 @@ public class BeforeAfter extends FrameLayout {
     /**
      * This function sets the maximum horizontal distance from the first position the slider can move.
      */
-    public void setDistanceMax() {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                beforeAfterSlider.setDistanceMax(BeforeAfter.this.getWidth() / 2);
-            }
-        }, 1000);
+    public void setDistanceMax(int distanceMax) {
+        this.distanceMax = distanceMax;
+        beforeAfterSlider.setDistanceMax(distanceMax);
     }
 
     /**
@@ -139,11 +130,19 @@ public class BeforeAfter extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        viewWidth = width;
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+//        if (distanceMax == -1){
+//            distanceMax = width/2;
+//        }
+        distanceMax = width/2;
+        beforeAfterSlider.setDistanceMax(distanceMax);
+        beforeAfterView.parentHeight = height;
+        beforeAfterView.parentWidth = width;
+        setHighThumb(height/5);
+        setHighLayoutText(width/ 5 + 10f);
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        beforeAfterView.parentHeight = this.getHeight();
-        beforeAfterView.parentWidth = this.getWidth();
-        setHighThumb(this.getHeight()/5);
-        setHighLayoutText(this.getHeight()/ 5 + 10f);
     }
 
     /**
@@ -197,4 +196,5 @@ public class BeforeAfter extends FrameLayout {
     public void setHighLayoutText(float hight){
         beforeAfterSlider.setHighOfLlText(hight);
     }
+
 }
