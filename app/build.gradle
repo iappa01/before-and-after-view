@@ -6,7 +6,7 @@ android {
     compileSdk 32
 
     defaultConfig {
-        applicationId "com.mobiai.views.beforeafter"
+        applicationId "com.TungCt.views.beforeafter"
         minSdk 24
         targetSdk 32
         versionCode 1
@@ -22,8 +22,7 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_11
     }
 }
 

@@ -5,8 +5,10 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.os.Handler;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -45,14 +47,6 @@ public class BeforeAfterView extends View {
         this.setOnTouchListener(multiTouchListener);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        // Set first value for x
-        x1 = this.getWidth() / 2;
-        x = x1;
-    }
-
     Paint paint = new Paint();
     Bitmap viewableImage;
     @Override
@@ -64,9 +58,7 @@ public class BeforeAfterView extends View {
         if (viewableImage != null){
             if (!viewableImage.isRecycled()) {
                 canvas.drawBitmap(viewableImage, x1, 0, paint);
-            } else{
             }
-        }else{
         }
     }
 
@@ -74,27 +66,13 @@ public class BeforeAfterView extends View {
     Bitmap standardizedSizeImage;
     public void setBeforeImage(Bitmap beforeImage) {
         standardizedSizeImage = beforeImage;
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Normalize the size of picture
-                normalScaleBeforeImage = Bitmap.createScaledBitmap(standardizedSizeImage,BeforeAfterView.this.getWidth(), BeforeAfterView.this.getHeight(), true );
-                requestLayout();
-            }
-        }, 0);
+//        requestLayout();
     }
 
-
+    Bitmap afterImage;
     public void setAfterImage(Bitmap afterImage) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Normalize the size of picture
-                afterImageTmp = afterImage.copy(Bitmap.Config.ARGB_8888,false);
-                normalScaleAfterImage = Bitmap.createScaledBitmap(afterImageTmp,BeforeAfterView.this.getWidth(), BeforeAfterView.this.getHeight(), true );
-                setX(BeforeAfterView.this.x);
-            }
-        }, 0);
+        this.afterImage = afterImage;
+        requestLayout();
     }
 
     public float getX() {
@@ -105,8 +83,9 @@ public class BeforeAfterView extends View {
      *
      * @param x is the horizontal coordinate from which the after_image begins to display
      */
-    private float x1;
+    private float x1 = 0;
     public void setX(float x) {
+        long currentTime = System.currentTimeMillis();
         this.x = x;
         if (x < 0) {
             x1 = 0;
@@ -119,12 +98,18 @@ public class BeforeAfterView extends View {
 
             if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
                 if (viewableImage != null) viewableImage.recycle();
-                viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) x1, 0, BeforeAfterView.this.getWidth() - (int) x1, Math.min(BeforeAfterView.this.getHeight(),normalScaleAfterImage.getHeight()));
+                try {
+                    viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) x1, 0, BeforeAfterView.this.getWidth() - (int) x1, Math.min(BeforeAfterView.this.getHeight(),normalScaleAfterImage.getHeight()));
+                }catch (Exception e){
+                    Log.e(TAG, "setX: " + e.getCause() + e.getMessage());
+                    viewableImage = null;
+                }
             }
         }
         this.invalidate();
+        Log.i(BeforeAfterView.class.getName(), "Time setX: " + (System.currentTimeMillis() - currentTime));
     }
-
+    String TAG = "BeforeAfterView";
     public float curScale = 1.0f;
     public float preScale = 1.0f;
     public void setCurScale(float scale) {
@@ -136,6 +121,7 @@ public class BeforeAfterView extends View {
     float parentWidth = 0;
     int viewHeight;
     int viewWidth;
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -148,8 +134,6 @@ public class BeforeAfterView extends View {
         if (standardizedSizeImage != null) {
             int pictureWidth = standardizedSizeImage.getWidth();
             int pictureHeight = standardizedSizeImage.getHeight();
-            viewWidth = 0;
-            viewHeight = 0;
 
             //Measure Width
             if (widthMode == MeasureSpec.EXACTLY) {
@@ -174,20 +158,41 @@ public class BeforeAfterView extends View {
                 //Be whatever you want
                 viewHeight = pictureHeight;
             }
-
             if (standardizedSizeImage.getWidth() >= standardizedSizeImage.getHeight()) {
                 viewHeight = (int) (((float) standardizedSizeImage.getHeight() / standardizedSizeImage.getWidth()) * viewWidth);
                 // if scale type is 0 => normal scale, if scale type is 1 => fill view.
+                setMeasuredDimension(viewWidth, viewHeight);
                 scaleViewToShow(1,scaleType);
             } else {
-//                viewWidth = (int) (((float) standardizedSizeImage.getWidth() / standardizedSizeImage.getHeight()) * viewHeight);
+                viewWidth = (int) (((float) standardizedSizeImage.getWidth() / standardizedSizeImage.getHeight()) * viewHeight);
                 // if scale type is 0 => normal scale, if scale type is 1 => fill view.
-                viewWidth = widthSize;
+//                viewWidth = widthSize;
+                setMeasuredDimension(viewWidth, viewHeight);
                 scaleViewToShow(0,scaleType);
             }
-            //MUST CALL THIS
-            setMeasuredDimension(viewWidth, viewHeight);
+            createAfterImage();
+            normalScaleBeforeImage = Bitmap.createScaledBitmap(standardizedSizeImage,viewWidth, viewHeight, true );
+            if (afterImage != null){
+                long startTime = System.currentTimeMillis();
+                afterImageTmp = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+                try {
+                    normalScaleAfterImage = Bitmap.createScaledBitmap(afterImageTmp,viewWidth, viewHeight, true );
+                }catch (Exception e){
+                    normalScaleAfterImage = null;
+                    Log.e(TAG, "onMeasure: " + e.getMessage() + e.getCause());
+                }
+                x = viewWidth/2;
+                x1 = viewWidth/2;
+                setX(x);
+                Log.i(BeforeAfterView.class.getName(), "Time create after image: "+ (System.currentTimeMillis() - startTime));
+            }
         }
+
+    }
+
+    private void createAfterImage() {
+
+
     }
 
     /**
@@ -200,20 +205,36 @@ public class BeforeAfterView extends View {
             case 0:
                 return;
             case 1:
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        float scale;
-                        if (direction == 0){
-                            scale = parentWidth/viewWidth;
-                        }else {
-                            scale = parentHeight/viewHeight;
-                        }
-                        BeforeAfterView.this.setCurScale(scale);
-                        BeforeAfterView.this.setScaleX(scale);
-                        BeforeAfterView.this.setScaleY(scale);
-                    }
-                },100);
+                float scale;
+                if (direction == 0){
+                    scale = parentWidth/viewWidth;
+                }else {
+                    scale = parentHeight/viewHeight;
+                }
+                BeforeAfterView.this.setCurScale(scale);
+                BeforeAfterView.this.setScaleX(scale);
+                BeforeAfterView.this.setScaleY(scale);
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) // implicit null check
+        {
+            Bundle bundle = (Bundle) state;
+            this.x = bundle.getFloat("x"); // ... load stuff
+            setX(x);
+            state = bundle.getParcelable("superState");
+        }
+        super.onRestoreInstanceState(state);
+    }
+
+    @Nullable
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("superState", super.onSaveInstanceState());
+        bundle.putFloat("x", x);
+        return bundle;
     }
 }
