@@ -14,11 +14,26 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 public class BeforeAfterView extends View {
+    private Bitmap originImage;
+    private Bitmap afterImage;
     private Bitmap normalScaleBeforeImage;
     private Bitmap normalScaleAfterImage;
-    public float x = 0;
-    int scaleType = 0;
-    private Bitmap afterImageTmp;
+    private Bitmap viewableImage;
+    private Paint paint = new Paint();
+    private String TAG = "BeforeAfterView";
+    // TODO sua them ham set get
+    public int scaleType = 0;
+    public float curScale = 1.0f;
+    public float preScale = 1.0f;
+    /**
+     * this variable is horizontal position of the thumb slider.
+     */
+    public float sliderPosition = 0;
+    /**
+     * this variable is horizontal position that afterImage was drawn by onDraw function.
+     */
+    private float splitPosition = 0;
+    // standardizedSizeImage is image whose size is set for view
 
     public BeforeAfterView(Context context) {
         super(context);
@@ -34,7 +49,7 @@ public class BeforeAfterView extends View {
         this.setOnTouchListener(multiTouchListener);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BeforeAfterView);
         try {
-            x = a.getFloat(R.styleable.BeforeAfterView_bav_setX, 0);
+            sliderPosition = a.getFloat(R.styleable.BeforeAfterView_bav_setX, 0);
         } finally {
             a.recycle();
         }
@@ -47,8 +62,7 @@ public class BeforeAfterView extends View {
         this.setOnTouchListener(multiTouchListener);
     }
 
-    Paint paint = new Paint();
-    Bitmap viewableImage;
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -57,61 +71,53 @@ public class BeforeAfterView extends View {
         }
         if (viewableImage != null){
             if (!viewableImage.isRecycled()) {
-                canvas.drawBitmap(viewableImage, x1, 0, paint);
+                canvas.drawBitmap(viewableImage, splitPosition, 0, paint);
             }
         }
     }
 
-    // standardizedSizeImage is image whose size is set for view
-    Bitmap standardizedSizeImage;
     public void setBeforeImage(Bitmap beforeImage) {
-        standardizedSizeImage = beforeImage;
+        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
 //        requestLayout();
     }
 
-    Bitmap afterImage;
     public void setAfterImage(Bitmap afterImage) {
-        this.afterImage = afterImage;
+        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
         requestLayout();
     }
 
     public float getX() {
-        return x;
+        return sliderPosition;
     }
 
     /**
      *
      * @param x is the horizontal coordinate from which the after_image begins to display
      */
-    private float x1 = 0;
     public void setX(float x) {
         long currentTime = System.currentTimeMillis();
-        this.x = x;
-        if (x < 0) {
-            x1 = 0;
-        } else if (x < this.getWidth()) {
-            x1 = x;
+        int margin = 10;
+        this.sliderPosition = x;
+        if (x <= margin) {
+            splitPosition = margin;
+        } else if (x < this.getWidth()-margin) {
+            splitPosition = x;
         } else {
-            x1 = this.getWidth();
+            splitPosition = this.getWidth() - margin;
         }
-        if (this.getWidth() > (int) x1) {
-
             if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
                 if (viewableImage != null) viewableImage.recycle();
                 try {
-                    viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) x1, 0, BeforeAfterView.this.getWidth() - (int) x1, Math.min(BeforeAfterView.this.getHeight(),normalScaleAfterImage.getHeight()));
+                    viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) splitPosition, 0, BeforeAfterView.this.getWidth() - (int) splitPosition, Math.min(BeforeAfterView.this.getHeight(),normalScaleAfterImage.getHeight()));
                 }catch (Exception e){
                     Log.e(TAG, "setX: " + e.getCause() + e.getMessage());
                     viewableImage = null;
                 }
             }
-        }
         this.invalidate();
         Log.i(BeforeAfterView.class.getName(), "Time setX: " + (System.currentTimeMillis() - currentTime));
     }
-    String TAG = "BeforeAfterView";
-    public float curScale = 1.0f;
-    public float preScale = 1.0f;
+
     public void setCurScale(float scale) {
         preScale = curScale;
         curScale = scale;
@@ -131,9 +137,9 @@ public class BeforeAfterView extends View {
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         // Set size for view
-        if (standardizedSizeImage != null) {
-            int pictureWidth = standardizedSizeImage.getWidth();
-            int pictureHeight = standardizedSizeImage.getHeight();
+        if (originImage != null) {
+            int pictureWidth = originImage.getWidth();
+            int pictureHeight = originImage.getHeight();
 
             //Measure Width
             if (widthMode == MeasureSpec.EXACTLY) {
@@ -158,34 +164,42 @@ public class BeforeAfterView extends View {
                 //Be whatever you want
                 viewHeight = pictureHeight;
             }
-            if (standardizedSizeImage.getWidth() >= standardizedSizeImage.getHeight()) {
-                viewHeight = (int) (((float) standardizedSizeImage.getHeight() / standardizedSizeImage.getWidth()) * viewWidth);
+            if (originImage.getWidth() >= originImage.getHeight()) {
+                viewHeight = (int) (((float) originImage.getHeight() / originImage.getWidth()) * viewWidth);
                 // if scale type is 0 => normal scale, if scale type is 1 => fill view.
                 setMeasuredDimension(viewWidth, viewHeight);
                 scaleViewToShow(1,scaleType);
             } else {
-                viewWidth = (int) (((float) standardizedSizeImage.getWidth() / standardizedSizeImage.getHeight()) * viewHeight);
+                viewWidth = (int) (((float) originImage.getWidth() / originImage.getHeight()) * viewHeight);
                 // if scale type is 0 => normal scale, if scale type is 1 => fill view.
 //                viewWidth = widthSize;
                 setMeasuredDimension(viewWidth, viewHeight);
                 scaleViewToShow(0,scaleType);
             }
             createAfterImage();
-            normalScaleBeforeImage = Bitmap.createScaledBitmap(standardizedSizeImage,viewWidth, viewHeight, true );
-            if (afterImage != null){
-                long startTime = System.currentTimeMillis();
-                afterImageTmp = afterImage.copy(Bitmap.Config.ARGB_8888,false);
-                try {
-                    normalScaleAfterImage = Bitmap.createScaledBitmap(afterImageTmp,viewWidth, viewHeight, true );
-                }catch (Exception e){
-                    normalScaleAfterImage = null;
-                    Log.e(TAG, "onMeasure: " + e.getMessage() + e.getCause());
+            try {
+                normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
+                if (afterImage != null){
+                    long startTime = System.currentTimeMillis();
+                    try {
+                        if (afterImage.getWidth() != viewWidth && afterImage.getHeight() != viewHeight){
+                            normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,viewWidth, viewHeight, false );
+                        }else{
+                            normalScaleAfterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+                        }
+                    }catch (Exception e){
+                        normalScaleAfterImage = null;
+                        Log.e(TAG, "onMeasure: " + e.getMessage() + e.getCause());
+                    }
+                    sliderPosition = viewWidth/2;
+                    splitPosition = viewWidth/2;
+                    setX(sliderPosition);
+                    Log.i(BeforeAfterView.class.getName(), "Time create after image: "+ (System.currentTimeMillis() - startTime));
                 }
-                x = viewWidth/2;
-                x1 = viewWidth/2;
-                setX(x);
-                Log.i(BeforeAfterView.class.getName(), "Time create after image: "+ (System.currentTimeMillis() - startTime));
+            }catch (Exception e){
+                    Log.e(TAG, "onMeasure: " + e.getCause());
             }
+
         }
 
     }
@@ -222,8 +236,8 @@ public class BeforeAfterView extends View {
         if (state instanceof Bundle) // implicit null check
         {
             Bundle bundle = (Bundle) state;
-            this.x = bundle.getFloat("x"); // ... load stuff
-            setX(x);
+            this.sliderPosition = bundle.getFloat("x"); // ... load stuff
+            setX(sliderPosition);
             state = bundle.getParcelable("superState");
         }
         super.onRestoreInstanceState(state);
@@ -234,7 +248,7 @@ public class BeforeAfterView extends View {
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();
         bundle.putParcelable("superState", super.onSaveInstanceState());
-        bundle.putFloat("x", x);
+        bundle.putFloat("x", sliderPosition);
         return bundle;
     }
 }
