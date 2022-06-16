@@ -62,7 +62,6 @@ public class BeforeAfterView extends View {
         this.setOnTouchListener(multiTouchListener);
     }
 
-
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -96,24 +95,24 @@ public class BeforeAfterView extends View {
      */
     public void setX(float x) {
         long currentTime = System.currentTimeMillis();
-        int margin = 10;
+        int margin = 1;
         this.sliderPosition = x;
         if (x <= margin) {
             splitPosition = margin;
-        } else if (x < this.getWidth()-margin) {
+        } else if (x < viewWidth-margin) {
             splitPosition = x;
         } else {
-            splitPosition = this.getWidth() - margin;
+            splitPosition = viewWidth - margin;
         }
-            if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
-                if (viewableImage != null) viewableImage.recycle();
-                try {
-                    viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) splitPosition, 0, BeforeAfterView.this.getWidth() - (int) splitPosition, Math.min(BeforeAfterView.this.getHeight(),normalScaleAfterImage.getHeight()));
-                }catch (Exception e){
-                    Log.e(TAG, "setX: " + e.getCause() + e.getMessage());
-                    viewableImage = null;
-                }
+        if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
+            if (viewableImage != null) viewableImage.recycle();
+            try {
+                viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) splitPosition, 0, viewWidth - (int) splitPosition, Math.min(viewHeight,normalScaleAfterImage.getHeight()));
+            }catch (Exception e){
+                Log.e(TAG, "setX: " +" "+splitPosition+" " + e.getMessage());
+                viewableImage = null;
             }
+        }
         this.invalidate();
         Log.i(BeforeAfterView.class.getName(), "Time setX: " + (System.currentTimeMillis() - currentTime));
     }
@@ -197,7 +196,7 @@ public class BeforeAfterView extends View {
                     Log.i(BeforeAfterView.class.getName(), "Time create after image: "+ (System.currentTimeMillis() - startTime));
                 }
             }catch (Exception e){
-                    Log.e(TAG, "onMeasure: " + e.getCause());
+                Log.e(TAG, "onMeasure: " + e.getCause());
             }
 
         }
@@ -205,8 +204,6 @@ public class BeforeAfterView extends View {
     }
 
     private void createAfterImage() {
-
-
     }
 
     /**
