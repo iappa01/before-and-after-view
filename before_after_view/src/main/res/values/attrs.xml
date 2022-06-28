@@ -8,11 +8,13 @@
         <attr name="typeScale" format="integer" />
         <attr name="color_slider_line" format="color" />
         <attr name="width_slider_line" format="dimension"/>
-        <attr name="src_slider_thumb" format="reference"/>
+        <attr name="background_slider_thumb" format="reference"/>
         <attr name="margin_left_text_before" format="dimension"/>
         <attr name="margin_right_text_after" format="dimension"/>
         <attr name="margin_top_text" format="dimension"/>
         <attr name="visibility_text" format="boolean"/>
-
+        <attr name="invisible_text" format="boolean"/>
+        <attr name="background_slider_line" format="reference"/>
+        <attr name="use_background_image" format="boolean"/>
     </declare-styleable>
 </resources>

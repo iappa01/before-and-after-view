@@ -5,19 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E5E5E5"
-    tools:context=".HomeActivity">
+    tools:context="com.mobiai.views.beforeafterapp.HomeActivity">
 
     <com.mobiai.views.beforeafter.BeforeAfter
         android:id="@+id/before_after"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
         app:color_slider_line="#2196F3"
         app:layout_constraintTop_toTopOf="parent"
         app:margin_left_text_before="16dp"
         app:margin_right_text_after="16dp"
         app:margin_top_text="16dp"
-        app:src_slider_thumb="@drawable/ic_thumb"
         app:typeScale="1"
+        app:use_background_image="true"
+        app:background_slider_line="@drawable/back"
+        app:background_slider_thumb="@drawable/ic_thumb"
         app:visibility_text="false"
-        app:width_slider_line="2dp"></com.mobiai.views.beforeafter.BeforeAfter>
+        app:invisible_text="true"
+        app:width_slider_line="2dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+    </com.mobiai.views.beforeafter.BeforeAfter>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

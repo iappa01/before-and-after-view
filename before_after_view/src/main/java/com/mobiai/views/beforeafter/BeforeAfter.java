@@ -17,14 +17,17 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class BeforeAfter extends FrameLayout {
     int widthSliderLine;
-    int srcSliderThumb;
+    int backgroundSliderThumb;
+    int backgroundSliderLine;
     int colorSliderLine;
     int marginLeftBeforeText;
     int marginRightAfterText;
     int marginTopText;
     boolean visibilityText;
     int distanceMax = -1;
-    int viewWidth;
+    boolean invisibleText;
+    boolean isHeightThumbSetDefault = true;
+    boolean useBackgroundImage;
 
     BeforeAfterView beforeAfterView;
     BeforeAfterSlider beforeAfterSlider;
@@ -44,24 +47,31 @@ public class BeforeAfter extends FrameLayout {
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.BeforeAfter);
         colorSliderLine = typedArray.getColor(R.styleable.BeforeAfter_color_slider_line, 000000);
         widthSliderLine = typedArray.getDimensionPixelSize(R.styleable.BeforeAfter_width_slider_line, 2);
-        srcSliderThumb = typedArray.getResourceId(R.styleable.BeforeAfter_src_slider_thumb, R.drawable.ba_seekbar_thumb);
+        backgroundSliderThumb = typedArray.getResourceId(R.styleable.BeforeAfter_background_slider_thumb, R.drawable.ba_seekbar_thumb);
         marginLeftBeforeText = typedArray.getDimensionPixelSize(R.styleable.BeforeAfter_margin_left_text_before, 2);
         marginRightAfterText = typedArray.getDimensionPixelSize(R.styleable.BeforeAfter_margin_right_text_after, 2);
         marginTopText = typedArray.getDimensionPixelSize(R.styleable.BeforeAfter_margin_top_text, 2);
         visibilityText = typedArray.getBoolean(R.styleable.BeforeAfter_visibility_text, false);
+        invisibleText = typedArray.getBoolean(R.styleable.BeforeAfter_invisible_text,false);
+        backgroundSliderLine = typedArray.getResourceId(R.styleable.BeforeAfter_background_slider_line, R.color.white);
+        useBackgroundImage = typedArray.getBoolean(R.styleable.BeforeAfter_use_background_image, false);
 
-        if (srcSliderThumb != 0) {
-            Drawable drawable = AppCompatResources.getDrawable(getContext(), srcSliderThumb);
-            beforeAfterSlider.thumb.setImageDrawable(drawable);
-        }
+        Drawable drawable = AppCompatResources.getDrawable(getContext(), backgroundSliderThumb);
+        beforeAfterSlider.thumb.setImageDrawable(drawable);
 
         beforeAfterView.scaleType = typedArray.getInteger(R.styleable.BeforeAfter_typeScale, 0);
         RelativeLayout.LayoutParams lineLayoutParams = (RelativeLayout.LayoutParams) beforeAfterSlider.line.getLayoutParams();
         lineLayoutParams.width = widthSliderLine;
         beforeAfterSlider.line.setLayoutParams(lineLayoutParams);
         beforeAfterSlider.line.setBackgroundColor(colorSliderLine);
+        if (useBackgroundImage){
+            beforeAfterSlider.line.setBackgroundResource(backgroundSliderLine);
+        }
         beforeAfterSlider.line.requestLayout();
 
+        if (invisibleText){
+            bitMapConverter.setVisibility(INVISIBLE);
+        }
         ConstraintLayout.LayoutParams textBefore = (ConstraintLayout.LayoutParams) bitMapConverter.textViewBefore.getLayoutParams();
         textBefore.setMargins(marginLeftBeforeText, marginTopText, 0, 0);
         bitMapConverter.textViewBefore.setLayoutParams(textBefore);
@@ -71,7 +81,6 @@ public class BeforeAfter extends FrameLayout {
         textAfter.setMargins(0, marginTopText, marginRightAfterText, 0);
         bitMapConverter.textViewAfter.setLayoutParams(textAfter);
         bitMapConverter.textViewAfter.requestLayout();
-
         if (visibilityText){
             beforeAfterSlider.llText.setVisibility(VISIBLE);
         }else {
@@ -83,9 +92,7 @@ public class BeforeAfter extends FrameLayout {
         setOnHorizontalMove();
     }
 
-    public void setBeforeImage(Bitmap beforeImage) {
-        beforeAfterView.setBeforeImage(beforeImage);
-    }
+    public void setBeforeImage(Bitmap beforeImage) {beforeAfterView.setBeforeImage(beforeImage); }
 
     public void setAfterImage(Bitmap afterImage) {
         beforeAfterView.setAfterImage(afterImage);
@@ -130,36 +137,35 @@ public class BeforeAfter extends FrameLayout {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        viewWidth = width;
-        int height = MeasureSpec.getSize(heightMeasureSpec);
-//        if (distanceMax == -1){
-//            distanceMax = width/2;
-//        }
+        beforeAfterView.parentHeightMeasureMode = MeasureSpec.getMode(heightMeasureSpec);
+        beforeAfterView.parentWidthMeasureMode = MeasureSpec.getMode(widthMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        int width = right - left;
+        int height = bottom - top;
         distanceMax = width/2;
         beforeAfterSlider.setDistanceMax(distanceMax);
-        beforeAfterView.parentHeight = height;
-        beforeAfterView.parentWidth = width;
-        setHighThumb(height/5);
+        if (isHeightThumbSetDefault){
+            setHighThumb(height/5);
+        }
         setHighLayoutText(width/ 5 + 10f);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        super.onLayout(changed, left, top, right, bottom);
     }
 
     /**
      *
      * @param text, default is "before"
      */
-    public void setTextBefore(String text){
-        bitMapConverter.setTextBefore(text);
-    }
+    public void setTextBefore(String text){bitMapConverter.setTextBefore(text); }
 
     /**
      *
      * @param text, default is "after"
      */
-    public void setTextAfter(String text){
-        bitMapConverter.setTextAfter(text);
-    }
+    public void setTextAfter(String text){bitMapConverter.setTextAfter(text); }
 
     /**
      *
@@ -173,9 +179,7 @@ public class BeforeAfter extends FrameLayout {
      *
      * @param size, default is 20sp
      */
-    public void setTextSize(int size){
-        bitMapConverter.setTextSize(size);
-    }
+    public void setTextSize(int size){bitMapConverter.setTextSize(size); }
 
     /**
      *
@@ -190,6 +194,7 @@ public class BeforeAfter extends FrameLayout {
      * @param hight, default is 1/5 * height
      */
     public void setHighThumb(float hight){
+        isHeightThumbSetDefault = false;
         beforeAfterSlider.setHighOfThumb(hight);
     }
 
