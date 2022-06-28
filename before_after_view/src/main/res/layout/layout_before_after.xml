@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <com.mobiai.views.beforeafter.BeforeAfterView
         android:id="@+id/before_after_view"
         android:layout_gravity="center"
@@ -13,12 +12,10 @@
     <com.mobiai.views.beforeafter.BitMapConverter
         android:id="@+id/before_after_get_bit_map"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
     <com.mobiai.views.beforeafter.BeforeAfterSlider
         android:layout_gravity="center"
         android:id="@+id/before_after_slider"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"/>
-
 </FrameLayout>

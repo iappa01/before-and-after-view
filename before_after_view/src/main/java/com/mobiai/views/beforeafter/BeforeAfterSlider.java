@@ -2,6 +2,7 @@ package com.mobiai.views.beforeafter;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -84,9 +85,7 @@ public class BeforeAfterSlider extends RelativeLayout {
         this.distance = distance;
     }
 
-    public void setHighOfThumb(float hight){
-        thumb.setTranslationY(-hight);
-    }
+    public void setHighOfThumb(float hight){thumb.setTranslationY(-hight); }
 
     public void setHighOfLlText(float hight){
         llText.setTranslationY(-hight);

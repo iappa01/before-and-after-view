@@ -1,8 +1,13 @@
-package com.mobiai.views.beforeafter;
+package com.mobiai.views.beforeafterapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import com.mobiai.views.beforeafter.BeforeAfter;
+
 
 public class HomeActivity extends AppCompatActivity {
     @Override

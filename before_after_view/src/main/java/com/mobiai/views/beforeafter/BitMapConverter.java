@@ -83,7 +83,6 @@ public class BitMapConverter extends FrameLayout {
 
     public void setTextBefore(String text){
         textViewBefore.setText(text);
-        requestLayout();
     }
 
     public void setTextAfter(String text){
