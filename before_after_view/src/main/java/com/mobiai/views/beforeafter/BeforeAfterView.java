@@ -141,7 +141,7 @@ public class BeforeAfterView extends View {
                 viewHeight = Math.min(pictureHeight, heightSize);
             }
 
-            if (pictureWidth/widthSize >= pictureHeight/heightSize) {
+            if (((float)pictureWidth)/widthSize >= ((float)pictureHeight)/heightSize) {
                 viewHeight = (int) (((float) pictureHeight / pictureWidth) * viewWidth);
                 // if scale type is 0 => normal scale, if scale type is 1 => fill view.
                 setMeasuredDimension(viewWidth, viewHeight);
