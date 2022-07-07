@@ -10,7 +10,7 @@
     <com.mobiai.views.beforeafter.BeforeAfter
         android:id="@+id/before_after"
         android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
         app:color_slider_line="#2196F3"
         app:layout_constraintTop_toTopOf="parent"
         app:margin_left_text_before="16dp"
@@ -20,8 +20,8 @@
         app:use_background_image="true"
         app:background_slider_line="@drawable/back"
         app:background_slider_thumb="@drawable/ic_thumb"
-        app:visibility_text="false"
-        app:invisible_text="true"
+        app:visibility_text="true"
+        app:invisible_text="false"
         app:width_slider_line="2dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
