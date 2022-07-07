@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
@@ -38,7 +39,7 @@ apply plugin: 'maven-publish'
 def githubProperties = new Properties()
 githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
 def getVersionName = { ->
-    return "1.0.0"  // Replace with version Name
+    return "1.0.4"  // Replace with version Name
 }
 def getArtificatId = { ->
     return "before_after_view" // Replace with library name ID
@@ -46,7 +47,7 @@ def getArtificatId = { ->
 publishing {
     publications {
         bar(MavenPublication) {
-            groupId 'Cao-Thanh-Tung' // Replace with group ID
+            groupId 'iappa01' // Replace with group ID
             artifactId getArtificatId()
             version getVersionName()
             artifact("./build/outputs/aar/${getArtificatId()}-release.aar")
@@ -59,7 +60,7 @@ publishing {
             /** Configure path of your package repository on Github
              *  Replace GITHUB_USERID with your/organisation Github userID and REPOSITORY with the repository name on GitHub
              */
-            url = uri("https://maven.pkg.github.com/Cao-Thanh-Tung/Before-After-View")
+            url = uri("https://maven.pkg.github.com/iappa01/before_and_after_view")
 //iappa01/before-and-after-view
             credentials {
                 /**Create github.properties in root project folder file with gpr.usr=GITHUB_USER_ID  & gpr.key=PERSONAL_ACCESS_TOKEN**/

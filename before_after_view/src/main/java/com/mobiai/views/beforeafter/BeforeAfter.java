@@ -151,7 +151,6 @@ public class BeforeAfter extends FrameLayout {
         if (isHeightThumbSetDefault){
             setHighThumb(height/5);
         }
-        setHighLayoutText(width/ 5 + 10f);
         super.onLayout(changed, left, top, right, bottom);
     }
 
@@ -196,6 +195,8 @@ public class BeforeAfter extends FrameLayout {
     public void setHighThumb(float hight){
         isHeightThumbSetDefault = false;
         beforeAfterSlider.setHighOfThumb(hight);
+        setHighLayoutText(hight + 15f);
+
     }
 
     public void setHighLayoutText(float hight){
