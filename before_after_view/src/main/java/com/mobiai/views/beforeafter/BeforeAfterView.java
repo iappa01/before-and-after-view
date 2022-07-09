@@ -80,12 +80,14 @@ public class BeforeAfterView extends View {
     }
 
     public void setBeforeImage(Bitmap beforeImage) {
-        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
+//        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
+        originImage = beforeImage;
 //        requestLayout();
     }
 
     public void setAfterImage(Bitmap afterImage) {
-        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+//        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+        this.afterImage = afterImage;
         requestLayout();
     }
 
@@ -134,7 +136,6 @@ public class BeforeAfterView extends View {
             }else{
                 viewWidth = Math.min(pictureWidth, widthSize);
             }
-
             if (parentHeightMeasureMode == MeasureSpec.AT_MOST){
                 viewHeight = heightSize;
             }else{
@@ -153,12 +154,18 @@ public class BeforeAfterView extends View {
                 scaleViewToShow(0,scaleType);
             }
 
-            normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
-            if (afterImage != null){
-                if (afterImage.getWidth() != viewWidth && afterImage.getHeight() != viewHeight){
-                    normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,viewWidth, viewHeight, false );
-                }else{
+            if (normalScaleBeforeImage == null){
+                if (pictureWidth == viewWidth && pictureHeight == viewHeight){
+                    normalScaleBeforeImage = originImage.copy(Bitmap.Config.ARGB_8888,false);
+                }else {
+                    normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
+                }
+            }
+            if (afterImage != null && normalScaleAfterImage == null){
+                if (afterImage.getWidth() == viewWidth && afterImage.getHeight() == viewHeight){
                     normalScaleAfterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+                }else{
+                    normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,viewWidth, viewHeight, false );
                 }
                 sliderPosition = viewWidth/2;
                 splitPosition = viewWidth/2;
