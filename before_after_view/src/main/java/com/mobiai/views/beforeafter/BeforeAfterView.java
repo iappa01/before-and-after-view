@@ -80,13 +80,11 @@ public class BeforeAfterView extends View {
     }
 
     public void setBeforeImage(Bitmap beforeImage) {
-//        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
         originImage = beforeImage;
 //        requestLayout();
     }
 
     public void setAfterImage(Bitmap afterImage) {
-//        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
         this.afterImage = afterImage;
         requestLayout();
     }
