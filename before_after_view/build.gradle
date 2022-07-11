@@ -39,7 +39,7 @@ apply plugin: 'maven-publish'
 def githubProperties = new Properties()
 githubProperties.load(new FileInputStream(rootProject.file("github.properties")))
 def getVersionName = { ->
-    return "1.0.4"  // Replace with version Name
+    return "1.0.5"  // Replace with version Name
 }
 def getArtificatId = { ->
     return "before_after_view" // Replace with library name ID
