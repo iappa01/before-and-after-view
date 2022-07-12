@@ -109,6 +109,8 @@ public class BeforeAfterView extends View {
         requestLayout();
     }
 
+
+
     public float getX() {
         return sliderPosition;
     }
@@ -128,11 +130,15 @@ public class BeforeAfterView extends View {
             splitPosition = viewWidth - margin;
         }
         if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
-            if (viewableImage != null && !viewableImage.isRecycled()) viewableImage.recycle();
+            if (viewableImage != null) viewableImage.recycle();
             try {
-                viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) splitPosition, 0, viewWidth - (int) splitPosition, Math.min(viewHeight,normalScaleAfterImage.getHeight()));
-            }catch (Exception e){
-                Log.e("BeforeAfterView", "setX: createbitmap:" + e.getCause());
+                viewableImage = Bitmap.createBitmap(normalScaleAfterImage,
+                        (int) splitPosition,
+                        0,
+                        viewWidth - (int) splitPosition,
+                        Math.min(viewHeight, normalScaleAfterImage.getHeight()));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         this.invalidate();
@@ -176,7 +182,7 @@ public class BeforeAfterView extends View {
                 scaleViewToShow(0,scaleType);
             }
 
-            if (normalScaleBeforeImage == null || normalScaleBeforeImage.isRecycled()){
+            if (normalScaleBeforeImage == null){
                 if (pictureWidth == viewWidth && pictureHeight == viewHeight){
                     normalScaleBeforeImage = originImage.copy(Bitmap.Config.ARGB_8888,false);
                 }else{

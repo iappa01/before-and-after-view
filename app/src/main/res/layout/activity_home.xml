@@ -9,7 +9,7 @@
 
     <com.mobiai.views.beforeafter.BeforeAfter
         android:id="@+id/before_after"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:color_slider_line="#2196F3"
         app:layout_constraintTop_toTopOf="parent"
