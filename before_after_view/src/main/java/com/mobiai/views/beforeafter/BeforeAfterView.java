@@ -1,5 +1,6 @@
 package com.mobiai.views.beforeafter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -149,6 +150,7 @@ public class BeforeAfterView extends View {
         curScale = scale;
     }
 
+    @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -195,8 +197,8 @@ public class BeforeAfterView extends View {
                 }else{
                     normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,viewWidth, viewHeight, false );
                 }
-                sliderPosition = viewWidth/2;
-                splitPosition = viewWidth/2;
+                sliderPosition = (float) viewWidth / 2;
+                splitPosition = (float) viewWidth / 2;
                 setX(sliderPosition);
             }
         }
@@ -226,23 +228,23 @@ public class BeforeAfterView extends View {
     }
 
     private void destroy(){
-        if (originImage != null){
-            originImage.isRecycled();
+        if (originImage != null && !originImage.isRecycled()){
+            originImage.recycle();
             originImage = null;
         }
-        if (afterImage != null){
-            afterImage.isRecycled();
+        if (afterImage != null && !afterImage.isRecycled()){
+            afterImage.recycle();
             afterImage = null;
         }
-        if (normalScaleBeforeImage != null){
+        if (normalScaleBeforeImage != null && !normalScaleBeforeImage.isRecycled()){
             normalScaleBeforeImage.recycle();
             normalScaleBeforeImage = null;
         }
-        if (normalScaleAfterImage != null){
+        if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()){
             normalScaleAfterImage.recycle();
             normalScaleAfterImage = null;
         }
-        if (viewableImage != null){
+        if (viewableImage != null && !viewableImage.isRecycled()){
             viewableImage.recycle();
             viewableImage = null;
         }
