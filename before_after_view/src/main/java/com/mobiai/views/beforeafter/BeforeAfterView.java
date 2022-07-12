@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -79,13 +80,31 @@ public class BeforeAfterView extends View {
         }
     }
 
+    public Bitmap resizeLargeImageToSmall(Bitmap bitmap){
+        float height;
+        float width;
+        if (bitmap.getHeight() > bitmap.getWidth()){
+            height = 1500;
+            width = (float)bitmap.getWidth()/(float)bitmap.getHeight() * height;
+        }else{
+            width = 1500;
+            height = (float) bitmap.getHeight()/(float) bitmap.getWidth() * width;
+        }
+        if (bitmap.getHeight() == (int)height && bitmap.getWidth() == (int)width){
+            return bitmap.copy(Bitmap.Config.ARGB_8888,false);
+        }else{
+            return Bitmap.createScaledBitmap(bitmap,(int)width, (int)height, false );
+        }
+    }
     public void setBeforeImage(Bitmap beforeImage) {
-        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
+//        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
+        originImage = resizeLargeImageToSmall(beforeImage);
 //        requestLayout();
     }
 
     public void setAfterImage(Bitmap afterImage) {
-        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+//        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+        this.afterImage = resizeLargeImageToSmall(afterImage);
         requestLayout();
     }
 
@@ -108,8 +127,12 @@ public class BeforeAfterView extends View {
             splitPosition = viewWidth - margin;
         }
         if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
-            if (viewableImage != null) viewableImage.recycle();
-            viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) splitPosition, 0, viewWidth - (int) splitPosition, Math.min(viewHeight,normalScaleAfterImage.getHeight()));
+            if (viewableImage != null && !viewableImage.isRecycled()) viewableImage.recycle();
+            try {
+                viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) splitPosition, 0, viewWidth - (int) splitPosition, Math.min(viewHeight,normalScaleAfterImage.getHeight()));
+            }catch (Exception e){
+                Log.e("BeforeAfterView", "setX: createbitmap:" + e.getCause());
+            }
         }
         this.invalidate();
     }
@@ -153,8 +176,12 @@ public class BeforeAfterView extends View {
                 scaleViewToShow(0,scaleType);
             }
 
-            normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
-            if (afterImage != null){
+            if (normalScaleBeforeImage == null || normalScaleBeforeImage.isRecycled()){
+                normalScaleBeforeImage = originImage.copy(Bitmap.Config.ARGB_8888,false);
+            }else{
+                normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
+            }
+            if (afterImage != null && (normalScaleAfterImage == null||normalScaleBeforeImage.isRecycled())){
                 if (afterImage.getWidth() != viewWidth && afterImage.getHeight() != viewHeight){
                     normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,viewWidth, viewHeight, false );
                 }else{
