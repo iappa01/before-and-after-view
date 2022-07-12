@@ -16,5 +16,6 @@
         <attr name="invisible_text" format="boolean"/>
         <attr name="background_slider_line" format="reference"/>
         <attr name="use_background_image" format="boolean"/>
+        <attr name="height_thumb" format="float"/>
     </declare-styleable>
 </resources>

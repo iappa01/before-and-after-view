@@ -28,6 +28,7 @@ public class BeforeAfter extends FrameLayout {
     boolean invisibleText;
     boolean isHeightThumbSetDefault = true;
     boolean useBackgroundImage;
+    float thumbHeight;
 
     BeforeAfterView beforeAfterView;
     BeforeAfterSlider beforeAfterSlider;
@@ -55,6 +56,7 @@ public class BeforeAfter extends FrameLayout {
         invisibleText = typedArray.getBoolean(R.styleable.BeforeAfter_invisible_text,false);
         backgroundSliderLine = typedArray.getResourceId(R.styleable.BeforeAfter_background_slider_line, R.color.white);
         useBackgroundImage = typedArray.getBoolean(R.styleable.BeforeAfter_use_background_image, false);
+        thumbHeight = typedArray.getFloat(R.styleable.BeforeAfter_height_thumb,0.2f);
 
         Drawable drawable = AppCompatResources.getDrawable(getContext(), backgroundSliderThumb);
         beforeAfterSlider.thumb.setImageDrawable(drawable);
@@ -149,7 +151,7 @@ public class BeforeAfter extends FrameLayout {
         distanceMax = width/2;
         beforeAfterSlider.setDistanceMax(distanceMax);
         if (isHeightThumbSetDefault){
-            setHighThumb(height/5);
+            setHighThumb(height*thumbHeight);
         }
         super.onLayout(changed, left, top, right, bottom);
     }

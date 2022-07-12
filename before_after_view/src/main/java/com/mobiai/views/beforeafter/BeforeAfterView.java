@@ -157,7 +157,6 @@ public class BeforeAfterView extends View {
             }else{
                 viewWidth = Math.min(pictureWidth, widthSize);
             }
-
             if (parentHeightMeasureMode == MeasureSpec.AT_MOST){
                 viewHeight = heightSize;
             }else{
