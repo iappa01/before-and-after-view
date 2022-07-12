@@ -89,6 +89,8 @@ public class BeforeAfterView extends View {
         requestLayout();
     }
 
+
+
     public float getX() {
         return sliderPosition;
     }
@@ -109,7 +111,15 @@ public class BeforeAfterView extends View {
         }
         if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
             if (viewableImage != null) viewableImage.recycle();
-            viewableImage = Bitmap.createBitmap(normalScaleAfterImage, (int) splitPosition, 0, viewWidth - (int) splitPosition, Math.min(viewHeight,normalScaleAfterImage.getHeight()));
+            try {
+                viewableImage = Bitmap.createBitmap(normalScaleAfterImage,
+                        (int) splitPosition,
+                        0,
+                        viewWidth - (int) splitPosition,
+                        Math.min(viewHeight, normalScaleAfterImage.getHeight()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         this.invalidate();
     }
@@ -159,6 +169,16 @@ public class BeforeAfterView extends View {
                     normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
                 }
             }
+
+            if (normalScaleBeforeImage != null){
+                if (originImage != null && !originImage.isRecycled()) {
+                    originImage.recycle();
+                    originImage = null;
+                }
+            }
+
+
+
             if (afterImage != null && normalScaleAfterImage == null){
                 if (afterImage.getWidth() == viewWidth && afterImage.getHeight() == viewHeight){
                     normalScaleAfterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
@@ -168,6 +188,12 @@ public class BeforeAfterView extends View {
                 sliderPosition = viewWidth/2;
                 splitPosition = viewWidth/2;
                 setX(sliderPosition);
+            }
+            if (normalScaleAfterImage != null) {
+                if (afterImage != null && !afterImage.isRecycled()) {
+                    afterImage.recycle();
+                    afterImage = null;
+                }
             }
         }
 
