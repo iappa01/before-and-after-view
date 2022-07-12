@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -18,6 +19,7 @@ public class BeforeAfterView extends View {
     private Bitmap normalScaleBeforeImage;
     private Bitmap normalScaleAfterImage;
     private Bitmap viewableImage;
+
     private Paint paint = new Paint();
     private int heightSize;
     private int widthSize;
@@ -79,13 +81,31 @@ public class BeforeAfterView extends View {
         }
     }
 
+    public Bitmap resizeLargeImageToSmall(Bitmap bitmap){
+        float height;
+        float width;
+        if (bitmap.getHeight() > bitmap.getWidth()){
+            height = 1500;
+            width = (float)bitmap.getWidth()/(float)bitmap.getHeight() * height;
+        }else{
+            width = 1500;
+            height = (float) bitmap.getHeight()/(float) bitmap.getWidth() * width;
+        }
+        if (bitmap.getHeight() == (int)height && bitmap.getWidth() == (int)width){
+            return bitmap.copy(Bitmap.Config.ARGB_8888,false);
+        }else{
+            return Bitmap.createScaledBitmap(bitmap,(int)width, (int)height, false );
+        }
+    }
     public void setBeforeImage(Bitmap beforeImage) {
-        originImage = beforeImage;
+//        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
+        originImage = resizeLargeImageToSmall(beforeImage);
 //        requestLayout();
     }
 
     public void setAfterImage(Bitmap afterImage) {
-        this.afterImage = afterImage;
+//        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+        this.afterImage = resizeLargeImageToSmall(afterImage);
         requestLayout();
     }
 
@@ -165,21 +185,11 @@ public class BeforeAfterView extends View {
             if (normalScaleBeforeImage == null){
                 if (pictureWidth == viewWidth && pictureHeight == viewHeight){
                     normalScaleBeforeImage = originImage.copy(Bitmap.Config.ARGB_8888,false);
-                }else {
+                }else{
                     normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
                 }
             }
-
-            if (normalScaleBeforeImage != null){
-                if (originImage != null && !originImage.isRecycled()) {
-                    originImage.recycle();
-                    originImage = null;
-                }
-            }
-
-
-
-            if (afterImage != null && normalScaleAfterImage == null){
+            if (afterImage != null && (normalScaleAfterImage == null||normalScaleBeforeImage.isRecycled())){
                 if (afterImage.getWidth() == viewWidth && afterImage.getHeight() == viewHeight){
                     normalScaleAfterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
                 }else{
@@ -188,12 +198,6 @@ public class BeforeAfterView extends View {
                 sliderPosition = viewWidth/2;
                 splitPosition = viewWidth/2;
                 setX(sliderPosition);
-            }
-            if (normalScaleAfterImage != null) {
-                if (afterImage != null && !afterImage.isRecycled()) {
-                    afterImage.recycle();
-                    afterImage = null;
-                }
             }
         }
 
@@ -219,6 +223,35 @@ public class BeforeAfterView extends View {
                 BeforeAfterView.this.setScaleX(scale);
                 BeforeAfterView.this.setScaleY(scale);
         }
+    }
+
+    private void destroy(){
+        if (originImage != null){
+            originImage.isRecycled();
+            originImage = null;
+        }
+        if (afterImage != null){
+            afterImage.isRecycled();
+            afterImage = null;
+        }
+        if (normalScaleBeforeImage != null){
+            normalScaleBeforeImage.recycle();
+            normalScaleBeforeImage = null;
+        }
+        if (normalScaleAfterImage != null){
+            normalScaleAfterImage.recycle();
+            normalScaleAfterImage = null;
+        }
+        if (viewableImage != null){
+            viewableImage.recycle();
+            viewableImage = null;
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        destroy();
+        super.onDetachedFromWindow();
     }
 
     @Override
