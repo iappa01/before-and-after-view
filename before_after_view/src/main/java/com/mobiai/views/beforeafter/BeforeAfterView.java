@@ -19,6 +19,7 @@ public class BeforeAfterView extends View {
     private Bitmap normalScaleBeforeImage;
     private Bitmap normalScaleAfterImage;
     private Bitmap viewableImage;
+
     private Paint paint = new Paint();
     private int heightSize;
     private int widthSize;
@@ -176,15 +177,17 @@ public class BeforeAfterView extends View {
             }
 
             if (normalScaleBeforeImage == null || normalScaleBeforeImage.isRecycled()){
-                normalScaleBeforeImage = originImage.copy(Bitmap.Config.ARGB_8888,false);
-            }else{
-                normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
+                if (pictureWidth == viewWidth && pictureHeight == viewHeight){
+                    normalScaleBeforeImage = originImage.copy(Bitmap.Config.ARGB_8888,false);
+                }else{
+                    normalScaleBeforeImage = Bitmap.createScaledBitmap(originImage,viewWidth, viewHeight, false );
+                }
             }
             if (afterImage != null && (normalScaleAfterImage == null||normalScaleBeforeImage.isRecycled())){
-                if (afterImage.getWidth() != viewWidth && afterImage.getHeight() != viewHeight){
-                    normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,viewWidth, viewHeight, false );
-                }else{
+                if (afterImage.getWidth() == viewWidth && afterImage.getHeight() == viewHeight){
                     normalScaleAfterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+                }else{
+                    normalScaleAfterImage = Bitmap.createScaledBitmap(afterImage,viewWidth, viewHeight, false );
                 }
                 sliderPosition = viewWidth/2;
                 splitPosition = viewWidth/2;
@@ -214,6 +217,35 @@ public class BeforeAfterView extends View {
                 BeforeAfterView.this.setScaleX(scale);
                 BeforeAfterView.this.setScaleY(scale);
         }
+    }
+
+    private void destroy(){
+        if (originImage != null){
+            originImage.isRecycled();
+            originImage = null;
+        }
+        if (afterImage != null){
+            afterImage.isRecycled();
+            afterImage = null;
+        }
+        if (normalScaleBeforeImage != null){
+            normalScaleBeforeImage.recycle();
+            normalScaleBeforeImage = null;
+        }
+        if (normalScaleAfterImage != null){
+            normalScaleAfterImage.recycle();
+            normalScaleAfterImage = null;
+        }
+        if (viewableImage != null){
+            viewableImage.recycle();
+            viewableImage = null;
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        destroy();
+        super.onDetachedFromWindow();
     }
 
     @Override
