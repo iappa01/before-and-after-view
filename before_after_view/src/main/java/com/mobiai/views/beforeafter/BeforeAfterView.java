@@ -135,7 +135,7 @@ public class BeforeAfterView extends View {
                 Bitmap tmp = Bitmap.createBitmap(normalScaleAfterImage,
                         (int) splitPosition,
                         0,
-                        Math.min(viewWidth - (int) splitPosition, normalScaleAfterImage.getWidth()),
+                        Math.min(viewWidth - (int) splitPosition, normalScaleAfterImage.getWidth() - (int) splitPosition),
                         Math.min(viewHeight, normalScaleAfterImage.getHeight()));
                 if (tmp != null) {
                     if (viewableImage != null) viewableImage.recycle();
