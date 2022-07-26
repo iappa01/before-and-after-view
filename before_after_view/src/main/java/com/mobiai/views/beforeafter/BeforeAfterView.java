@@ -131,13 +131,16 @@ public class BeforeAfterView extends View {
             splitPosition = viewWidth - margin;
         }
         if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()) {
-            if (viewableImage != null) viewableImage.recycle();
             try {
-                viewableImage = Bitmap.createBitmap(normalScaleAfterImage,
+                Bitmap tmp = Bitmap.createBitmap(normalScaleAfterImage,
                         (int) splitPosition,
                         0,
                         viewWidth - (int) splitPosition,
                         Math.min(viewHeight, normalScaleAfterImage.getHeight()));
+                if (tmp != null) {
+                    if (viewableImage != null) viewableImage.recycle();
+                    viewableImage = tmp;
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
