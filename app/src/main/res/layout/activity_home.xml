@@ -18,7 +18,7 @@
         app:margin_top_text="16dp"
         app:typeScale="1"
         app:use_background_image="true"
-        app:background_slider_line="@drawable/back"
+        app:background_slider_line="@drawable/ic_thumb"
         app:background_slider_thumb="@drawable/ic_thumb"
         app:visibility_text="true"
         app:invisible_text="false"

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -83,25 +84,18 @@ public class BeforeAfterView extends View {
     }
 
     public Bitmap resizeLargeImageToSmall(Bitmap bitmap){
-        float height;
-        float width;
-        if (bitmap.getHeight() > bitmap.getWidth()){
-            height = 1500;
-            width = (float)bitmap.getWidth()/(float)bitmap.getHeight() * height;
-        }else{
-            width = 1500;
-            height = (float) bitmap.getHeight()/(float) bitmap.getWidth() * width;
-        }
-        if (bitmap.getHeight() == (int)height && bitmap.getWidth() == (int)width){
+        if (bitmap.getHeight() * bitmap.getWidth() > 1500 * 1500) {
+            float ratio = (float)bitmap.getWidth() / bitmap.getHeight();
+            Matrix matrix = new Matrix();
+            matrix.setScale(ratio, ratio);
+
+            return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        } else {
             return bitmap.copy(Bitmap.Config.ARGB_8888,false);
-        }else{
-            return Bitmap.createScaledBitmap(bitmap,(int)width, (int)height, false );
         }
     }
     public void setBeforeImage(Bitmap beforeImage) {
-//        originImage = beforeImage.copy(Bitmap.Config.ARGB_8888,false);
         originImage = resizeLargeImageToSmall(beforeImage);
-//        requestLayout();
     }
 
     public void setAfterImage(Bitmap afterImage) {

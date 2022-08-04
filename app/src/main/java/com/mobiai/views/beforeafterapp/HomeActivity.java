@@ -15,7 +15,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         BeforeAfter beforeAfter = (BeforeAfter) findViewById(R.id.before_after);
-        beforeAfter.setBeforeImage(BitmapFactory.decodeResource(getResources(), R.drawable.anh_nang));
-        beforeAfter.setAfterImage(BitmapFactory.decodeResource(getResources(), R.drawable.ba));
+        beforeAfter.setBeforeImage(BitmapFactory.decodeResource(getResources(), R.drawable.a));
+        beforeAfter.setAfterImage(BitmapFactory.decodeResource(getResources(), R.drawable.a));
     }
 }
