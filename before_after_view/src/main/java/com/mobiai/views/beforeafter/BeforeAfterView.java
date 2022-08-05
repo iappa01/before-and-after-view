@@ -218,6 +218,12 @@ public class BeforeAfterView extends View {
                 }else {
                     scale = (float)heightSize/viewHeight;
                 }
+
+                // check min max for scale
+                scale = Math.min(scale, 10000);
+                scale = Math.max(scale, 0.0001f);
+
+
                 BeforeAfterView.this.setCurScale(scale);
                 BeforeAfterView.this.setScaleX(scale);
                 BeforeAfterView.this.setScaleY(scale);
