@@ -101,6 +101,7 @@ public class BeforeAfter extends FrameLayout {
     }
 
     public void reset() {
+        beforeAfterSlider.setTranslationX(0);
         beforeAfterView.destroy();
     }
 
