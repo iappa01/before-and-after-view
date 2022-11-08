@@ -230,7 +230,7 @@ public class BeforeAfterView extends View {
         }
     }
 
-    private void destroy(){
+    public void destroy(){
         if (originImage != null && !originImage.isRecycled()){
             originImage.recycle();
             originImage = null;

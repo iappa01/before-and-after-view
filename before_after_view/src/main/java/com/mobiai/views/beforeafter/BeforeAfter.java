@@ -100,6 +100,10 @@ public class BeforeAfter extends FrameLayout {
         beforeAfterView.setAfterImage(afterImage);
     }
 
+    public void reset() {
+        beforeAfterView.destroy();
+    }
+
     /**
      *
      * @param x is the horizontal coordinate from which the after_image begins to display
