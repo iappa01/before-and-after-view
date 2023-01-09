@@ -85,7 +85,15 @@ public class BeforeAfterView extends View {
 
     public Bitmap resizeLargeImageToSmall(Bitmap bitmap){
         if (bitmap.getHeight() * bitmap.getWidth() > 1500 * 1500) {
+
             float ratio = (float)bitmap.getWidth() / bitmap.getHeight();
+
+            if (ratio > 1) {
+                ratio = 1500F / bitmap.getWidth();
+            } else {
+                ratio = 1500F / bitmap.getHeight();
+            }
+
             Matrix matrix = new Matrix();
             matrix.setScale(ratio, ratio);
 
