@@ -3,11 +3,13 @@ package com.mobiai.views.beforeafter;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,7 @@ public class BeforeAfter extends FrameLayout {
     BeforeAfterSlider beforeAfterSlider;
     BitMapConverter bitMapConverter;
     BeforeAfterText beforeAfterText;
+    ImageView imgBackground;
     View view;
 
     public BeforeAfter(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -43,6 +46,7 @@ public class BeforeAfter extends FrameLayout {
         beforeAfterView = view.findViewById(R.id.before_after_view);
         beforeAfterSlider = view.findViewById(R.id.before_after_slider);
         bitMapConverter = view.findViewById(R.id.before_after_get_bit_map);
+        imgBackground = view.findViewById(R.id.background);
         beforeAfterText = bitMapConverter.beforeAfterText;
 
         TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.BeforeAfter);
@@ -92,6 +96,10 @@ public class BeforeAfter extends FrameLayout {
         typedArray.recycle();
 
         setOnHorizontalMove();
+    }
+
+    public ImageView getBackgroundImageView() {
+        return imgBackground;
     }
 
     public void setBeforeImage(Bitmap beforeImage) {beforeAfterView.setBeforeImage(beforeImage); }
