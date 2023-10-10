@@ -31,7 +31,8 @@ public class BeforeAfter extends FrameLayout {
     boolean isHeightThumbSetDefault = true;
     boolean useBackgroundImage;
     float thumbHeight;
-
+    boolean isTranslateEnabled;
+    boolean isScaleEnabled;
     BeforeAfterView beforeAfterView;
     BeforeAfterSlider beforeAfterSlider;
     BitMapConverter bitMapConverter;
@@ -61,7 +62,10 @@ public class BeforeAfter extends FrameLayout {
         backgroundSliderLine = typedArray.getResourceId(R.styleable.BeforeAfter_background_slider_line, R.color.white);
         useBackgroundImage = typedArray.getBoolean(R.styleable.BeforeAfter_use_background_image, false);
         thumbHeight = typedArray.getFloat(R.styleable.BeforeAfter_height_thumb,0.2f);
-
+        isTranslateEnabled = typedArray.getBoolean(R.styleable.BeforeAfter_is_translate_enabled, true);
+        isScaleEnabled = typedArray.getBoolean(R.styleable.BeforeAfter_is_scale_enabled, true);
+        beforeAfterView.isScaleEnable = isScaleEnabled;
+        beforeAfterView.isTranslteEnable = isTranslateEnabled;
         Drawable drawable = AppCompatResources.getDrawable(getContext(), backgroundSliderThumb);
         beforeAfterSlider.thumb.setImageDrawable(drawable);
 

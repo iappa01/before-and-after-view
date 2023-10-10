@@ -25,7 +25,9 @@
         app:width_slider_line="2dp"
         app:height_thumb="0.5"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
+        app:layout_constraintRight_toRightOf="parent"
+        app:is_scale_enabled="false"
+        app:is_translate_enabled="false">
     </com.mobiai.views.beforeafter.BeforeAfter>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
