@@ -42,10 +42,20 @@ public class BeforeAfterView extends View {
      */
     private float splitPosition = 0;
     // standardizedSizeImage is image whose size is set for view
-
+    private MultiTouchListener multiTouchListener;
+    public boolean isScaleEnable;
+    public boolean isTranslteEnable;
+//    public void setIsScaleEnable(Boolean isScaleEnable){
+//        this.multiTouchListener.isScaleEnabled = isScaleEnable;
+//    }
+//    public void setIsTranslateEnable(Boolean isTranslateEnable){
+//        this.multiTouchListener.isTranslateEnabled = isTranslateEnable;
+//    }
     public BeforeAfterView(Context context) {
         super(context);
-        MultiTouchListener multiTouchListener = new MultiTouchListener();
+        multiTouchListener = new MultiTouchListener();
+        multiTouchListener.isTranslateEnabled = isTranslteEnable;
+        multiTouchListener.isScaleEnabled = isScaleEnable;
         multiTouchListener.setBeforeAfterView(this);
         this.setOnTouchListener(multiTouchListener);
     }
@@ -61,6 +71,8 @@ public class BeforeAfterView extends View {
         } finally {
             a.recycle();
         }
+        multiTouchListener.isTranslateEnabled = isTranslteEnable;
+        multiTouchListener.isScaleEnabled = isScaleEnable;
     }
 
     public BeforeAfterView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
@@ -68,6 +80,8 @@ public class BeforeAfterView extends View {
         MultiTouchListener multiTouchListener = new MultiTouchListener();
         multiTouchListener.setBeforeAfterView(this);
         this.setOnTouchListener(multiTouchListener);
+        multiTouchListener.isTranslateEnabled = isTranslteEnable;
+        multiTouchListener.isScaleEnabled = isScaleEnable;
     }
 
     @Override

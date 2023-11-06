@@ -17,5 +17,8 @@
         <attr name="background_slider_line" format="reference"/>
         <attr name="use_background_image" format="boolean"/>
         <attr name="height_thumb" format="float"/>
+        <attr name="is_translate_enabled" format="boolean"/>
+        <attr name="is_scale_enabled" format="boolean"/>
+
     </declare-styleable>
 </resources>
