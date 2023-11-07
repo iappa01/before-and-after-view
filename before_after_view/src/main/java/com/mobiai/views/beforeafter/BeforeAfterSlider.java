@@ -31,11 +31,7 @@ public class BeforeAfterSlider extends RelativeLayout {
                     break;
                 case MotionEvent.ACTION_MOVE:
                     float deltaX = motionEvent.getX() - prePivotX;
-                    deltaX = moveHorizontal(deltaX);
-                    if (onMoveHorizontalListener != null){
-                        onMoveHorizontalListener.onChange(deltaX);
-                        llText.setVisibility(GONE);
-                    }
+                    moveSlideAndBeforeAfterView(deltaX);
                     break;
                 case MotionEvent.ACTION_UP:
                     break;
@@ -54,6 +50,14 @@ public class BeforeAfterSlider extends RelativeLayout {
         line = view.findViewById(R.id.ba_seekbar_line);
         line.setOnTouchListener(sliderMoveHandle);
         thumb.setOnTouchListener(sliderMoveHandle);
+    }
+
+    public void moveSlideAndBeforeAfterView(float deltaX) {
+        deltaX = moveHorizontal(deltaX);
+        if (onMoveHorizontalListener != null){
+            onMoveHorizontalListener.onChange(deltaX);
+            llText.setVisibility(GONE);
+        }
     }
 
     /**

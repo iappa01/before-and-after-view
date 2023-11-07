@@ -148,11 +148,13 @@ public class BeforeAfter extends FrameLayout {
         beforeAfterSlider.setOnMoveHorizontalListener(new BeforeAfterSlider.OnMoveHorizontalListener() {
             @Override
             public void onChange(float deltaX) {
-                BeforeAfter.this.setBeforeAfterX(BeforeAfter.this.getBeforeAfterX() + deltaX / BeforeAfter.this.getCurScale());
+                BeforeAfter.this.setBeforeAfterX(getBeforeAfterX() + deltaX /getCurScale());
                 beforeAfterText.setX(beforeAfterText.x + deltaX);
             }
         });
     }
+
+
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

@@ -113,7 +113,7 @@ public class BeforeAfterView extends View {
 
             return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         } else {
-            return bitmap.copy(Bitmap.Config.ARGB_8888,false);
+            return bitmap.copy(Bitmap.Config.RGB_565,false);
         }
     }
     public void setBeforeImage(Bitmap beforeImage) {
