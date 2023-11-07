@@ -60,6 +60,10 @@ public class BeforeAfterSlider extends RelativeLayout {
         }
     }
 
+    public void resetPosition(Float delta) {
+        moveSlideAndBeforeAfterView(getTranslationX() * -1  + delta);
+    }
+
     /**
      * This function to translate slider.
      * @param deltaX is theoretical displacement of slider.

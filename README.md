@@ -58,3 +58,34 @@ Connect in Java class:
     // Set after image
     ba.setAfterImage(afterImage);
 ```
+
+Run Auto Slide
+```java
+runner = new BeforeAfterRunner(beforeAfter, beforeAfter.getMeasuredWidth());
+runner.start();
+getLifecycle().addObserver(runner);
+```
+
+Record Video from AutoSlide
+```java
+runner.startSlideAndRecord(new BeforeAfterRunner.OnEncodedListener() {
+           @Override
+           public void onStart() {
+               // run on background
+               if (!isDestroyed())
+                   runOnUiThread(() -> Toast.makeText(HomeActivity.this, "Start record", Toast.LENGTH_LONG).show());
+           }
+
+           @Override
+           public void onCompleted(@NonNull String output) {
+               // run on background
+               if (!isDestroyed())
+                   runOnUiThread(() -> Toast.makeText(HomeActivity.this, "Finish record", Toast.LENGTH_LONG).show());
+           }
+
+           @Override
+           public void onEncodedFrame(@NonNull BeforeAfterRunner.Frame frame) {
+               // run on background
+           }
+       });
+        ```
