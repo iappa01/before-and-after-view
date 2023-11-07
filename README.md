@@ -35,7 +35,7 @@ implementation 'com.github.iappa01:before-and-after-view:1.0.4'
 ---
 # How do I use **BeforeAfter** view
 
-In XML, this view's basic fundamental:</br>
+## In XML, this view's basic fundamental:</br>
 
 ``` xml
     <com.mobiai.views.beforeafter.BeforeAfter
@@ -46,7 +46,7 @@ In XML, this view's basic fundamental:</br>
         />
 ```
 
-Connect in Java class:
+## Connect in Java class:
 ``` java
     // create bitmap from drawable image. 
     Bitmap beforeImage = BitmapFactory.decodeResource(getResources(),R.drawable.before);
@@ -59,14 +59,14 @@ Connect in Java class:
     ba.setAfterImage(afterImage);
 ```
 
-Run Auto Slide
+## Run Auto Slide
 ```java
 runner = new BeforeAfterRunner(beforeAfter, beforeAfter.getMeasuredWidth());
 runner.start();
 getLifecycle().addObserver(runner);
 ```
 
-Record Video from AutoSlide
+## Record Video from AutoSlide
 ```java
 runner.startSlideAndRecord(new BeforeAfterRunner.OnEncodedListener() {
            @Override
