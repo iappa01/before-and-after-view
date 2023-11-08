@@ -2,7 +2,7 @@ package com.mobiai.views.utils
 
 import android.graphics.Bitmap
 
-fun compressBitmap(originalBitmap: Bitmap, quality: Int): Bitmap {
+fun compressBitmap(originalBitmap: Bitmap): Bitmap {
 
     val orgW = originalBitmap.width
     val orgH = originalBitmap.height

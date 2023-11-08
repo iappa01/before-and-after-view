@@ -245,12 +245,25 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
         var width = v.width
         var height = v.height
 
+//        val wishWight = 720
+//
+//        if (width > wishWight) {
+//            width = wishWight
+//            height = (wishWight * height / width)
+//            if (height % 2 != 0) {
+//                height += 1
+//            }
+//        }
+
+
         val b = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
         val c = Canvas(b)
         v.layout(v.left, v.top, v.right, v.bottom)
         v.draw(c)
 
-        val rs = compressBitmap(b, 80)
+//        return b
+
+        val rs = compressBitmap(b)
 
         if (b != rs) {
             b.recycle()
