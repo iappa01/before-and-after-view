@@ -18,36 +18,10 @@ import android.widget.Toast;
 import android.widget.VideoView;
 import com.mobiai.views.beforeafter.BeforeAfter;
 import com.mobiai.views.beforeafter.BeforeAfterRunner;
-import com.mobiai.views.beforeafter.BeforeAfterSlider;
-
-import org.jcodec.api.SequenceEncoder;
-import org.jcodec.api.android.AndroidSequenceEncoder;
-import org.jcodec.common.model.Picture;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-
 
 public class HomeActivity extends AppCompatActivity {
-    int a = -1;
-
-    int RIGHT = 1;
-    int LEFT = -1;
-    int directory = 1; // 1: RIGHT, -1: LEFT
-
-    int step = 40;
-
-
-    String output;
-//    SequenceEncoder sequenceEncoder;
-
-    AndroidSequenceEncoder androidSequenceEncoder;
 
     BeforeAfterRunner runner = null;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +32,6 @@ public class HomeActivity extends AppCompatActivity {
         beforeAfter.setAfterImage(BitmapFactory.decodeResource(getResources(), R.drawable.anh1));
 
 
-        output = getFilesDir().getAbsolutePath().concat("/out.mp4");
 
 
         ((EditText)findViewById(R.id.edtStep)).addTextChangedListener(new TextWatcher() {
@@ -134,12 +107,6 @@ public class HomeActivity extends AppCompatActivity {
         });
 
 
-        try {
-            androidSequenceEncoder = AndroidSequenceEncoder.create30Fps(new File(output));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
         beforeAfter.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -148,7 +115,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 runner = new BeforeAfterRunner(beforeAfter, beforeAfter.getMeasuredWidth());
 
-                runner.start();
+//                runner.start();
 
                 getLifecycle().addObserver(runner);
 

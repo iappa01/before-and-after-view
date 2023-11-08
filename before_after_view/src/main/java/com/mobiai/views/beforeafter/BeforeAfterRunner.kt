@@ -10,9 +10,12 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.mobiai.views.beforeafter.BitMapConverter.loadBitmapFromView
+import com.mobiai.views.utils.compressBitmap
 import org.jcodec.api.android.AndroidSequenceEncoder
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.lang.Exception
 import java.util.concurrent.atomic.AtomicBoolean
 
 
@@ -61,6 +64,15 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
     private var flipLeft = 1
     private var onEncodedListener: OnEncodedListener? = null
 
+
+
+    private fun modeRunStartRightToLeft() {
+        flipRight = 1
+        flipLeft = 1
+
+        // beforeAfterSlider.translationX.toInt()  + slideWidth / 2  < step + 10
+    }
+
     private fun isContinue() : Boolean {
         return !isDestroy && isRunning
     }
@@ -78,7 +90,8 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
         }
         bitmaps.clear()
         directory = DIRECTORY.LEFT
-        beforeAfterSlider.resetPosition(slideWidth / 2f)
+//        beforeAfterSlider.resetPosition(slideWidth / 2f)
+        beforeAfterSlider.resetPosition(0F)
         record = true
 
         isRunning = false
@@ -132,7 +145,10 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
                 detalX = step * -1
             }
 
-            if (!isRunFullCycle && flipLeft == 0 && flipRight == 0 && beforeAfterSlider.translationX.toInt()  + slideWidth / 2  < step + 10) {
+            // finish at left : beforeAfterSlider.translationX.toInt()  + slideWidth / 2  < step + 10
+            // finish at center: beforeAfterSlider.translationX < 0
+
+            if (!isRunFullCycle && flipLeft == 0 && flipRight == 0 && beforeAfterSlider.translationX <= 0) {
                 isRunFullCycle = true
                 encode()
             }
@@ -189,48 +205,51 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
 
                 if (bitmaps.size == 0) break
                 val frame = bitmaps[0]
+//                val b = compressBitmap(frame.bitmap, 80)
+
+//                Log.i(TAG2, "Encode Thread is running...bitmap size ${frame.bitmap.byteCount/1024} , compare: ${(frame.bitmap.byteCount - b.byteCount)/1024}")
 
                 androidSequenceEncoder.encodeImage(frame.bitmap)
                 onEncodedListener?.onEncodedFrame(frame)
 
-                frame.bitmap.recycle()
+                try {
+//                    b.recycle()
+                    frame.bitmap.recycle()
+                } catch (e: Exception) {}
+
                 bitmaps.removeAt(0)
 
                 Log.i(TAG2, "Encode Thread is running...bitmap remain ${bitmaps.size}")
             }
-            Log.i(TAG2, "Encode Thread is stop ${System.currentTimeMillis() - startTime}")
-            onEncodedListener?.onCompleted(output.absolutePath)
-            androidSequenceEncoder.finish()
-        }
 
+            androidSequenceEncoder.finish()
+            onEncodedListener?.onCompleted(output.absolutePath)
+
+
+            Log.i(TAG2, "Encode Thread stop: Size ${output.length()}, time: ${System.currentTimeMillis() - startTime}")
+        }
     }
 
     private fun loadBitmapFromView(v: View): Bitmap {
 
-
-//        var width = v.width / 2
-//        if (width % 2 != 0) width++
-//        var height = v.height / 2
-//        if (height %2 != 0) height++
-
         var width = v.width
         var height = v.height
-
 
         val b = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
         val c = Canvas(b)
         v.layout(v.left, v.top, v.right, v.bottom)
-//        v.layout(v.left, v.top, v.left + width, v.top + height)
         v.draw(c)
 
-//        val re =  b.scale(v.width/2, v.height/2, false)
-//
-//        if (re != b) {
-//            b.recycle()
-//        }
+        val rs = compressBitmap(b, 80)
 
-        return b
+        if (b != rs) {
+            b.recycle()
+            System.gc()
+        }
+
+        return rs
     }
 
 
 }
+
