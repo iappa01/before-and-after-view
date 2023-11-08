@@ -2,7 +2,6 @@ package com.mobiai.views.beforeafter
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.os.Handler
 import android.os.Looper
@@ -10,10 +9,8 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.mobiai.views.beforeafter.BitMapConverter.loadBitmapFromView
 import com.mobiai.views.utils.compressBitmap
 import org.jcodec.api.android.AndroidSequenceEncoder
-import java.io.ByteArrayOutputStream
 import java.io.File
 import java.lang.Exception
 import java.util.concurrent.atomic.AtomicBoolean
@@ -25,7 +22,7 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
         private val TAG = BeforeAfterRunner::class.java.simpleName
     }
 
-    var isRunning = false
+    var isSlideRunning = false
     var detalX = -1
 
     var androidSequenceEncoder : AndroidSequenceEncoder? = null
@@ -51,9 +48,9 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
 
 
 
-    fun start() {
-        if (isRunning) return
-        isRunning = true
+    fun runSlide() {
+        if (isSlideRunning) return
+        isSlideRunning = true
         handler.postDelayed(runner, delay)
     }
 
@@ -74,30 +71,41 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
     }
 
     private fun isContinue() : Boolean {
-        return !isDestroy && isRunning
+        return !isDestroy && isSlideRunning
     }
 
     private fun isRecording() : Boolean {
         return record && !isRunFullCycle
     }
 
-    fun startSlideAndRecord(onEncodedListener: OnEncodedListener) {
-        // restart
-        handler.removeCallbacksAndMessages(null)
-
+    private fun clearFrameQueue() {
         bitmaps.forEach {
             it.bitmap.recycle()
         }
         bitmaps.clear()
+    }
+
+    fun startSlideAndRecord(onEncodedListener: OnEncodedListener) {
+        // setup slider before recording
         directory = DIRECTORY.LEFT
 //        beforeAfterSlider.resetPosition(slideWidth / 2f)
         beforeAfterSlider.resetPosition(0F)
         record = true
 
-        isRunning = false
-        start()
+        clearFrameQueue()
+
+        // start run slide
+        isSlideRunning = false
+        isRunFullCycle = false
+        flipRight = 1
+        flipLeft = 1
+
+        handler.removeCallbacksAndMessages(null)
+        runSlide()
 
         this.onEncodedListener = onEncodedListener
+
+        encode()
     }
 
     private fun encode() {
@@ -113,7 +121,7 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
 
     override fun onDestroy(owner: LifecycleOwner) {
         isDestroy = true
-        isRunning = false
+        isSlideRunning = false
         handler.removeCallbacksAndMessages(null)
 
         encodeThread?.cancel()
@@ -145,13 +153,7 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
                 detalX = step * -1
             }
 
-            // finish at left : beforeAfterSlider.translationX.toInt()  + slideWidth / 2  < step + 10
-            // finish at center: beforeAfterSlider.translationX < 0
 
-            if (!isRunFullCycle && flipLeft == 0 && flipRight == 0 && beforeAfterSlider.translationX <= 0) {
-                isRunFullCycle = true
-                encode()
-            }
 
 
             if (!isDestroy) {
@@ -162,6 +164,14 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
                     bitmaps.add(Frame(bitmap))
                     Log.i(TAG, "bitmaps add : ${bitmaps.size}")
                 }
+            }
+
+            // finish at left : beforeAfterSlider.translationX.toInt()  + slideWidth / 2  < step + 10
+            // finish at center: beforeAfterSlider.translationX < 0
+
+            if (!isRunFullCycle && flipLeft == 0 && flipRight == 0 && beforeAfterSlider.translationX <= 0) {
+                isRunFullCycle = true
+                encodeThread?.isRecordDone?.set(true)
             }
 
             if (isContinue())
@@ -191,29 +201,29 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
         private val output = File(context.filesDir, "before_after_slide.mp4")
         private val androidSequenceEncoder = AndroidSequenceEncoder.create30Fps(output)
 
-        private var isRunning = AtomicBoolean(false)
+        private var isEncoding = AtomicBoolean(false)
+        var isRecordDone = AtomicBoolean(false)
+
 
         fun cancel() {
-            isRunning.set(false)
+            isEncoding.set(false)
         }
         override fun run() {
-            isRunning.set(true)
+            isEncoding.set(true)
             val startTime = System.currentTimeMillis()
 
             onEncodedListener?.onStart()
-            while (isRunning.get()) {
+            while (isEncoding.get()) {
 
-                if (bitmaps.size == 0) break
+                if (bitmaps.size == 0 && isRecordDone.get()) break
+
+                if (bitmaps.size == 0) continue
+
                 val frame = bitmaps[0]
-//                val b = compressBitmap(frame.bitmap, 80)
-
-//                Log.i(TAG2, "Encode Thread is running...bitmap size ${frame.bitmap.byteCount/1024} , compare: ${(frame.bitmap.byteCount - b.byteCount)/1024}")
-
                 androidSequenceEncoder.encodeImage(frame.bitmap)
                 onEncodedListener?.onEncodedFrame(frame)
 
                 try {
-//                    b.recycle()
                     frame.bitmap.recycle()
                 } catch (e: Exception) {}
 
