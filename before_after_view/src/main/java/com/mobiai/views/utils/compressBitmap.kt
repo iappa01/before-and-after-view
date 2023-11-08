@@ -7,7 +7,7 @@ fun compressBitmap(originalBitmap: Bitmap): Bitmap {
     val orgW = originalBitmap.width
     val orgH = originalBitmap.height
 
-    val w = 720
+    val w = 600
 
     if (w < orgW) {
         var h = (w * orgH / orgW)
