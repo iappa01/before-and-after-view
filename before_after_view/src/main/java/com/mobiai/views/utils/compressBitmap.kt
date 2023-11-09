@@ -2,12 +2,12 @@ package com.mobiai.views.utils
 
 import android.graphics.Bitmap
 
-fun compressBitmap(originalBitmap: Bitmap): Bitmap {
+fun compressBitmap(originalBitmap: Bitmap, limitWidth: Int = 720): Bitmap {
 
     val orgW = originalBitmap.width
     val orgH = originalBitmap.height
 
-    val w = 600
+    val w = limitWidth
 
     if (w < orgW) {
         var h = (w * orgH / orgW)

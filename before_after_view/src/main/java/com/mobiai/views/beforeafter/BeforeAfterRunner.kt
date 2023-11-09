@@ -25,7 +25,6 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
     var isSlideRunning = false
     var detalX = -1
 
-    var androidSequenceEncoder : AndroidSequenceEncoder? = null
 
     private var isDestroy = false
     private var bitmaps = ArrayList<Frame>()
@@ -40,6 +39,7 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
 
     var step = (60 * 0.61).toInt()
     var delay = 10L
+    var limitWidth = 720
 
     data class Frame (val bitmap: Bitmap, val added: Boolean = false)
 
@@ -263,7 +263,7 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
 
 //        return b
 
-        val rs = compressBitmap(b)
+        val rs = compressBitmap(b, limitWidth)
 
         if (b != rs) {
             b.recycle()
