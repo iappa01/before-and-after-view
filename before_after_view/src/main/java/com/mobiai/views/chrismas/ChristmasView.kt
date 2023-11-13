@@ -42,14 +42,26 @@ class ChristmasView(context: Context, attributeSet: AttributeSet) : View(context
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
+        // view wight / view height = bg.wight/ bg.height
+
+        // height = width * bg,height / bg.width
+
+
+
+        val bgRect = Rect(0, 0, bg.width, bg.height)
         val viewRect = Rect(
-            0, 0, width, height
+            0, 0, width, (width * bg.height) / bg.width
         )
 
-        canvas.drawBitmap(bg, Rect(0, 0, bg.width, bg.height), viewRect, paint)
+
+        val objGrayRect = Rect(0, 0, objGray.width, objGray.height)
+
+
+
+        canvas.drawBitmap(bg, bgRect, viewRect, paint)
 
 //        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.OVERLAY);
-        canvas.drawBitmap(objGray, 0f, 0f, paint2)
+        canvas.drawBitmap(objGray, objGrayRect, viewRect, paint2)
 
         paint2.alpha = 33;
         paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP);
