@@ -14,11 +14,15 @@ fun compressBitmap(originalBitmap: Bitmap, limitWidth: Int = 720): Bitmap {
         if (h % 2 != 0) {
             h += 1
         }
-        val b = Bitmap.createScaledBitmap(originalBitmap, w, h, false)
-        return b
+        return Bitmap.createScaledBitmap(originalBitmap, w, h, false)
     } else {
-        val b = Bitmap.createScaledBitmap(originalBitmap, orgW, orgH, false)
-        return b
+        val w = orgW
+        var h = orgH
+        if (h % 2 != 0) {
+            h += 1
+        }
+
+        return Bitmap.createScaledBitmap(originalBitmap, w, h, false)
     }
 
 
