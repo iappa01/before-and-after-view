@@ -224,4 +224,8 @@ public class BeforeAfter extends FrameLayout {
         beforeAfterSlider.setHighOfLlText(hight);
     }
 
+    public void setAlphaAfter(int percent) {
+
+    }
+
 }

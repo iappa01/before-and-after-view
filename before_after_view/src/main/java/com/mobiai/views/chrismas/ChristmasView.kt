@@ -74,14 +74,13 @@ class ChristmasView(context: Context, attributeSet: AttributeSet) : View(context
 
         val bmp = bitmap.copy(Bitmap.Config.ARGB_8888, true)
 
-
         val percent = if (percentInput <= 0 ) 0 else if (percentInput >= 100) 100 else percentInput
         val canvas  = Canvas(bmp)
 
         canvas.drawBitmap(bitmap, 0f, 0f, null)
 
         val paint = Paint().apply {
-            alpha = (255 * percent / 100).toInt()
+            alpha = (255 * percent / 100)
         }
         canvas.drawBitmap(bitmap2, 0f, 0f, paint)
 

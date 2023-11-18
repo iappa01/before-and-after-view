@@ -122,6 +122,15 @@ public class BeforeAfterView extends View {
 
     public void setAfterImage(Bitmap afterImage) {
 //        this.afterImage = afterImage.copy(Bitmap.Config.ARGB_8888,false);
+        if (afterImage != null && afterImage.isRecycled()) {
+            afterImage.recycle();
+            afterImage = null;
+        }
+        if (normalScaleAfterImage != null && !normalScaleAfterImage.isRecycled()){
+            normalScaleAfterImage.recycle();
+            normalScaleAfterImage = null;
+        }
+
         this.afterImage = resizeLargeImageToSmall(afterImage);
         requestLayout();
     }
