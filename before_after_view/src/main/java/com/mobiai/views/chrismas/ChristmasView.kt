@@ -11,6 +11,7 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.View
 import com.mobiai.views.beforeafter.R
+import com.mobiai.views.utils.resizeWithLimitWidth
 import com.mobiai.views.utils.toGrayscale
 
 class ChristmasView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet,) {
@@ -20,23 +21,15 @@ class ChristmasView(context: Context, attributeSet: AttributeSet) : View(context
     var bg : Bitmap
     var objGray : Bitmap
     val paint = Paint()
-    val paint2 = Paint()
-
-    init {
-        obj = BitmapFactory.decodeResource(context.resources, R.drawable.obj )
-        objGray = obj.toGrayscale()
-
-        bg  = BitmapFactory.decodeResource(context.resources, R.drawable.ba )
+    val paint2 = Paint().apply {
+        xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP);
     }
 
-    fun setObject() {
-        val obj = BitmapFactory.decodeResource(context.resources, R.drawable.obj )
-        val objGray = obj.toGrayscale()
+    init {
+        obj = BitmapFactory.decodeResource(context.resources, R.drawable.obj ).resizeWithLimitWidth()
+        objGray = obj.toGrayscale()
 
-        val bg = BitmapFactory.decodeResource(context.resources, R.drawable.f )
-
-
-
+        bg  = BitmapFactory.decodeResource(context.resources, R.drawable.vietnam_flag )
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -45,6 +38,7 @@ class ChristmasView(context: Context, attributeSet: AttributeSet) : View(context
         // view wight / view height = bg.wight/ bg.height
 
         // height = width * bg,height / bg.width
+        // width = height * bg,width / bg.height
 
 
 
@@ -54,20 +48,29 @@ class ChristmasView(context: Context, attributeSet: AttributeSet) : View(context
         )
 
 
+
+
+
+
+
         val objGrayRect = Rect(0, 0, objGray.width, objGray.height)
+        var objGrayRectV = Rect(0, 0, width, (width * objGray.height) / objGray.width)
 
+//        if (obj.height > obj.width) {
+//            objGrayRectV = Rect(0, 0, height * bg.width/ bg.height, height).apply {
+//                right = bg.width -
+//            }
+//        }
 
-
-        canvas.drawBitmap(bg, bgRect, viewRect, paint)
+        canvas.drawBitmap(bg, null, viewRect, paint)
 
 //        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.OVERLAY);
-        canvas.drawBitmap(objGray, objGrayRect, viewRect, paint2)
+        canvas.drawBitmap(objGray, null, objGrayRectV, paint2)
 
         paint2.alpha = 33;
-        paint2.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP);
+
         canvas.drawBitmap(bg, Rect(0, 0, bg.width, bg.height), viewRect, paint2);
 
-//        canvas.drawColor(Color.BLUE, PorterDuff.Mode.SRC_ATOP)
 
 
     }
