@@ -3,19 +3,15 @@ package com.mobiai.views.beforeafterapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.VideoView;
+
 import com.mobiai.views.beforeafter.BeforeAfter;
 import com.mobiai.views.beforeafter.BeforeAfterRunner;
 

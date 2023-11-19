@@ -30,8 +30,8 @@ public class BeforeAfterDemo extends AppCompatActivity {
 
         Slider slider = findViewById(R.id.slider);
 
-        Bitmap before = BitmapFactory.decodeResource(getResources(), com.mobiai.views.beforeafter.R.drawable.org);
-        Bitmap after = BitmapFactory.decodeResource(getResources(), com.mobiai.views.beforeafter.R.drawable.red);
+        Bitmap before = BitmapFactory.decodeResource(getResources(), R.drawable.anh1);
+        Bitmap after = BitmapFactory.decodeResource(getResources(), R.drawable.anh2);
         beforeAfter.setBeforeImage(before);
 
         slider.addOnChangeListener(new Slider.OnChangeListener() {
