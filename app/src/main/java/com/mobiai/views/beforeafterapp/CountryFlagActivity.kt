@@ -4,15 +4,15 @@ import android.app.Activity
 import android.os.Bundle
 import com.mobiai.views.chrismas.CountryFlagView
 
-class ChristmasActivity: Activity() {
+class CountryFlagActivity: Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_christmas)
+        setContentView(R.layout.activity_country_flag)
 
 
-        val countryFlagView = findViewById<CountryFlagView>(R.id.christmas)
+        val countryFlagView = findViewById<CountryFlagView>(R.id.countryflag)
 
         countryFlagView.updateBackground(R.drawable.a)
         countryFlagView.updateObject(R.drawable.b)

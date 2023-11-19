@@ -24,7 +24,7 @@
 
 
         <activity
-            android:name=".ChristmasActivity"
+            android:name=".CountryFlagActivity"
             android:exported="true">
         </activity>
     </application>
