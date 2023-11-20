@@ -9,12 +9,11 @@ import android.util.Log
 import android.view.View
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.mobiai.views.beforeafter.BitMapConverter.loadBitmapFromView
 import com.mobiai.views.utils.compressBitmap
 import org.jcodec.api.android.AndroidSequenceEncoder
 import java.io.File
-import java.lang.Exception
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): DefaultLifecycleObserver {
 
@@ -28,6 +27,9 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
 
     private var isDestroy = false
     private var bitmaps = ArrayList<Frame>()
+    private var bitmaps2 = arrayOf<Frame>()
+
+
 
     enum class DIRECTORY {
         RIGHT,
@@ -218,14 +220,17 @@ class BeforeAfterRunner(val beforeAfter: BeforeAfter, val slideWidth: Int): Defa
                 if (bitmaps.size == 0 && isRecordDone.get()) break
 
                 if (bitmaps.size == 0) continue
-
-                val frame = bitmaps[0]
-                androidSequenceEncoder.encodeImage(frame.bitmap)
-                onEncodedListener?.onEncodedFrame(frame)
+                if (bitmaps[0] == null) continue
 
                 try {
+                    val frame = bitmaps[0]
+                    androidSequenceEncoder.encodeImage(frame.bitmap)
+                    onEncodedListener?.onEncodedFrame(frame)
+
                     frame.bitmap.recycle()
-                } catch (e: Exception) {}
+                } catch (e: Exception) {
+
+                }
 
                 bitmaps.removeAt(0)
 
