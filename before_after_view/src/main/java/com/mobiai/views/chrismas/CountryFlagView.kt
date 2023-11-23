@@ -7,12 +7,14 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import com.mobiai.views.beforeafter.R
 import com.mobiai.views.utils.decodeSampledBitmapFromPath
 import com.mobiai.views.utils.decodeSampledBitmapFromResource
 import com.mobiai.views.utils.resizeWithLimitWidth
+import com.mobiai.views.utils.toBitmap
 import com.mobiai.views.utils.toGrayscale
 
 class CountryFlagView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet,) {
@@ -41,6 +43,10 @@ class CountryFlagView(context: Context, attributeSet: AttributeSet) : View(conte
 
     public fun updateObject(bitmap: Bitmap) {
         objGray = bitmap.resizeWithLimitWidth(600).toGrayscale()
+    }
+
+    public fun updateObject(drawable: Drawable) {
+        objGray = drawable.toBitmap().resizeWithLimitWidth(600).toGrayscale()
     }
 
     fun updateBackground(bgRes: Int) {
