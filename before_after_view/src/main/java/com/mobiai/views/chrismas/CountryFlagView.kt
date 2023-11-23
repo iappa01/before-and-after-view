@@ -12,6 +12,7 @@ import android.view.View
 import com.mobiai.views.beforeafter.R
 import com.mobiai.views.utils.decodeSampledBitmapFromPath
 import com.mobiai.views.utils.decodeSampledBitmapFromResource
+import com.mobiai.views.utils.resizeWithLimitWidth
 import com.mobiai.views.utils.toGrayscale
 
 class CountryFlagView(context: Context, attributeSet: AttributeSet) : View(context, attributeSet,) {
@@ -36,6 +37,10 @@ class CountryFlagView(context: Context, attributeSet: AttributeSet) : View(conte
 
     public fun updateObject(objPath: Int) {
         objGray = decodeSampledBitmapFromResource(resources, objPath, 300, 300).toGrayscale()
+    }
+
+    public fun updateObject(bitmap: Bitmap) {
+        objGray = bitmap.resizeWithLimitWidth(600).toGrayscale()
     }
 
     fun updateBackground(bgRes: Int) {
